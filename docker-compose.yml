@@ -35,7 +35,7 @@ services:
       build:
         context: .
         dockerfile: ./docker/backend/Dockerfile
-      command: bash -c 'cd /app/backend; while !</dev/tcp/db/5432; do sleep 1; done; gunicorn --bind 0.0.0.0:8000 backend.wsgi'
+      command: bash -c 'cd /app/backend; while !</dev/tcp/db/5432; do sleep 1; done; gunicorn --bind 0.0.0.0:8000 backend.wsgi; python3 manage.py migrate'
       # entrypoint: /app/docker/backend/wsgi-entrypoint.sh
       volumes:
         - static_volume:/app/backend/django_static
