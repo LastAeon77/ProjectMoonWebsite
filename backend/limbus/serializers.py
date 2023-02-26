@@ -3,17 +3,18 @@ from rest_framework import serializers
 
 
 class IdentitySerializers(serializers.ModelSerializer):
-    resistance_wrath = serializers.SerializerMethodField()
-    resistance_lust = serializers.SerializerMethodField()
-    resistance_wrath = serializers.SerializerMethodField()
-    resistance_sloth = serializers.SerializerMethodField()
-    resistance_gluttony = serializers.SerializerMethodField()
-    resistance_gloom = serializers.SerializerMethodField()
-    resistance_pride = serializers.SerializerMethodField()
-    resistance_envy = serializers.SerializerMethodField()
-    resistance_slash = serializers.SerializerMethodField()
-    resistance_pierce = serializers.SerializerMethodField()
-    resistance_blunt = serializers.SerializerMethodField()
+    resistance_wrath = serializers.CharField(source="get_resistance_wrath_display")
+    resistance_lust = serializers.CharField(source="get_resistance_lust_display")
+    resistance_sloth = serializers.CharField(source="get_resistance_sloth_display")
+    resistance_gluttony = serializers.CharField(
+        source="get_resistance_gluttony_display"
+    )
+    resistance_gloom = serializers.CharField(source="get_resistance_gloom_display")
+    resistance_pride = serializers.CharField(source="get_resistance_pride_display")
+    resistance_envy = serializers.CharField(source="get_resistance_envy_display")
+    resistance_slash = serializers.CharField(source="get_resistance_slash_display")
+    resistance_pierce = serializers.CharField(source="get_resistance_pierce_display")
+    resistance_blunt = serializers.CharField(source="get_resistance_blunt_display")
     sinner = serializers.StringRelatedField(read_only=True)
 
     class Meta:
@@ -39,17 +40,18 @@ class IdentitySerializers(serializers.ModelSerializer):
 
 
 class EGOSerializers(serializers.ModelSerializer):
-    resistance_wrath = serializers.SerializerMethodField()
-    resistance_lust = serializers.SerializerMethodField()
-    resistance_wrath = serializers.SerializerMethodField()
-    resistance_sloth = serializers.SerializerMethodField()
-    resistance_gluttony = serializers.SerializerMethodField()
-    resistance_gloom = serializers.SerializerMethodField()
-    resistance_pride = serializers.SerializerMethodField()
-    resistance_envy = serializers.SerializerMethodField()
-    resistance_slash = serializers.SerializerMethodField()
-    resistance_pierce = serializers.SerializerMethodField()
-    resistance_blunt = serializers.SerializerMethodField()
+    resistance_wrath = serializers.CharField(source="get_resistance_wrath_display")
+    resistance_lust = serializers.CharField(source="get_resistance_lust_display")
+    resistance_sloth = serializers.CharField(source="get_resistance_sloth_display")
+    resistance_gluttony = serializers.CharField(
+        source="get_resistance_gluttony_display"
+    )
+    resistance_gloom = serializers.CharField(source="get_resistance_gloom_display")
+    resistance_pride = serializers.CharField(source="get_resistance_pride_display")
+    resistance_envy = serializers.CharField(source="get_resistance_envy_display")
+    resistance_slash = serializers.CharField(source="get_resistance_slash_display")
+    resistance_pierce = serializers.CharField(source="get_resistance_pierce_display")
+    resistance_blunt = serializers.CharField(source="get_resistance_blunt_display")
     sinner = serializers.StringRelatedField(read_only=True)
 
     class Meta:
