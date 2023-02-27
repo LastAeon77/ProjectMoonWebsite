@@ -8,6 +8,65 @@ class Sinner(models.Model):
         return self.name
 
 
+class Passive(models.Model):
+    in_game_id = models.CharField(max_length=10)
+    name = models.CharField(max_length=30)
+    desc = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class PassiveEgo(models.Model):
+    in_game_id = models.CharField(max_length=10)
+    name = models.CharField(max_length=30)
+    desc = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class PassiveAbnormality(models.Model):
+    in_game_id = models.CharField(max_length=10)
+    name = models.CharField(max_length=30)
+    desc = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Skill(models.Model):
+    name = models.CharField(max_length=30)
+    in_game_id = models.CharField(max_length=10)
+    level = models.IntegerField()
+    desc = models.TextField(null=True, blank=True)
+    coindescs = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class SkillEgo(models.Model):
+    name = models.CharField(max_length=30)
+    in_game_id = models.CharField(max_length=10)
+    level = models.IntegerField()
+    desc = models.TextField(null=True, blank=True)
+    abName = models.CharField(max_length=30)
+    coindescs = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class PassiveEnemy(models.Model):
+    in_game_id = models.CharField(max_length=10)
+    name = models.CharField(max_length=30)
+    desc = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 # Create your models here.
 class Identity(models.Model):
     name = models.CharField(max_length=50, null=True)
@@ -15,9 +74,15 @@ class Identity(models.Model):
     sinner = models.ForeignKey(Sinner, on_delete=models.CASCADE)
     passive_on_field = models.TextField(null=True, blank=True)
     passive_off_field = models.TextField(null=True, blank=True)
-    skill_1 = models.TextField(null=True, blank=True)
-    skill_2 = models.TextField(null=True, blank=True)
-    skill_3 = models.TextField(null=True, blank=True)
+    skill_1 = models.ForeignKey(
+        Skill, null=True, blank=True, on_delete=models.CASCADE, related_name="skill_1"
+    )
+    skill_2 = models.ForeignKey(
+        Skill, null=True, blank=True, on_delete=models.CASCADE, related_name="skill_2"
+    )
+    skill_3 = models.ForeignKey(
+        Skill, null=True, blank=True, on_delete=models.CASCADE, related_name="skill_3"
+    )
     is_in_game = models.BooleanField(default=True)
     hp = models.IntegerField(default=None, null=True)
     block = models.IntegerField(default=None, null=True)
@@ -105,8 +170,20 @@ class EGO(models.Model):
     resource_used_gloom = models.IntegerField(default=0)
     resource_used_pride = models.IntegerField(default=0)
     resource_used_envy = models.IntegerField(default=0)
-    awakening_skill = models.TextField(null=True, blank=True)
-    corrision_skill = models.TextField(null=True, blank=True)
+    awakening_skill = models.ForeignKey(
+        SkillEgo,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="awakening_skill",
+    )
+    corrision_skill = models.ForeignKey(
+        SkillEgo,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="corrision_skill",
+    )
 
     passive_on_field = models.TextField(null=True, blank=True)
     passive_off_field = models.TextField(null=True, blank=True, default=None)
@@ -144,37 +221,6 @@ class EGO(models.Model):
     )
 
     image_link = models.CharField(max_length=200, null=True, blank=True, default=None)
-
-class Passive(models.Model):
-    in_game_id = models.CharField(max_length=10)
-    name = models.CharField(max_length=30)
-    desc = models.TextField(null=True, blank=True)
-
-
-class PassiveEgo(models.Model):
-    in_game_id = models.CharField(max_length=10)
-    name = models.CharField(max_length=30)
-    desc = models.TextField(null=True, blank=True)
-
-
-class PassiveAbnormality(models.Model):
-    in_game_id = models.CharField(max_length=10)
-    name = models.CharField(max_length=30)
-    desc = models.TextField(null=True, blank=True)
-
-
-class Skill(models.Model):
-    name = models.CharField(max_length=30)
-    in_game_id = models.CharField(max_length=10)
-    level = models.IntegerField()
-    desc = models.TextField(null=True, blank=True)
-    coindescs = models.TextField(null=True, blank=True)
-
-
-class PassiveEnemy(models.Model):
-    in_game_id = models.CharField(max_length=10)
-    name = models.CharField(max_length=30)
-    desc = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name
