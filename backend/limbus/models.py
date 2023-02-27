@@ -15,19 +15,27 @@ class Identity(models.Model):
     sinner = models.ForeignKey(Sinner, on_delete=models.CASCADE)
     passive_on_field = models.TextField(null=True, blank=True)
     passive_off_field = models.TextField(null=True, blank=True)
-    skills = models.TextField()
+    skill_1 = models.TextField(null=True, blank=True)
+    skill_2 = models.TextField(null=True, blank=True)
+    skill_3 = models.TextField(null=True, blank=True)
+    is_in_game = models.BooleanField(default=True)
+    hp = models.IntegerField(default=None,null=True)
+    block = models.IntegerField(default=None,null=True)
     FATAL = "F"
     WEAK = "W"
     NORMAL = "N"
     ENDURED = "E"
     INEFFECTIVE = "I"
+    IMMUNE = "M"
     RESISTANCE_TYPES = [
         (FATAL, "Fatal"),
         (WEAK, "Weak"),
         (NORMAL, "Normal"),
         (ENDURED, "Endured"),
         (INEFFECTIVE, "Ineffective"),
+        (IMMUNE, "Immune"),
     ]
+    speed = models.CharField(max_length=10, default=None,null=True)
     # Sin Resistance
     resistance_wrath = models.CharField(
         max_length=1, choices=RESISTANCE_TYPES, default=NORMAL
@@ -61,6 +69,7 @@ class Identity(models.Model):
     resistance_blunt = models.CharField(
         max_length=1, choices=RESISTANCE_TYPES, default=NORMAL
     )
+    image_link = models.CharField(max_length=200, null=True, blank=True, default=None)
 
     def __str__(self):
         return self.name
@@ -69,18 +78,24 @@ class Identity(models.Model):
 class EGO(models.Model):
     name = models.CharField(max_length=50)
     rarity = models.IntegerField()
+    sinner = models.ForeignKey(Sinner, on_delete=models.CASCADE,null=True,default=None)
+    is_in_game = models.BooleanField(default=True)
     FATAL = "F"
     WEAK = "W"
     NORMAL = "N"
     ENDURED = "E"
     INEFFECTIVE = "I"
+    IMMUNE = "M"
+
     RESISTANCE_TYPES = [
         (FATAL, "Fatal"),
         (WEAK, "Weak"),
         (NORMAL, "Normal"),
         (ENDURED, "Endured"),
         (INEFFECTIVE, "Ineffective"),
+        (IMMUNE, "Immune"),
     ]
+    speed = models.CharField(max_length=10,null=True,blank=True)
     resource_used_wrath = models.IntegerField(default=0)
     resource_used_lust = models.IntegerField(default=0)
     resource_used_sloth = models.IntegerField(default=0)
@@ -88,7 +103,8 @@ class EGO(models.Model):
     resource_used_gloom = models.IntegerField(default=0)
     resource_used_pride = models.IntegerField(default=0)
     resource_used_envy = models.IntegerField(default=0)
-    skills = models.TextField()
+    awakening_skill = models.TextField(null=True, blank=True)
+    corrision_skill = models.TextField(null=True, blank=True)
 
     passive_on_field = models.TextField(null=True, blank=True)
     passive_off_field = models.TextField(null=True, blank=True, default=None)
@@ -124,6 +140,32 @@ class EGO(models.Model):
     resistance_blunt = models.CharField(
         max_length=1, choices=RESISTANCE_TYPES, default=NORMAL
     )
+
+    image_link = models.CharField(max_length=200, null=True, blank=True, default=None)
+
+
+class Passive(models.Model):
+    in_game_id = models.CharField(max_length=10)
+    name = models.CharField(max_length=30)
+    desc = models.TextField()
+
+
+class PassiveEgo(models.Model):
+    in_game_id = models.CharField(max_length=10)
+    name = models.CharField(max_length=30)
+    desc = models.TextField()
+
+
+class PassiveAbnormality(models.Model):
+    in_game_id = models.CharField(max_length=10)
+    name = models.CharField(max_length=30)
+    desc = models.TextField()
+
+
+class PassiveEnemy(models.Model):
+    in_game_id = models.CharField(max_length=10)
+    name = models.CharField(max_length=30)
+    desc = models.TextField()
 
     def __str__(self):
         return self.name

@@ -25,7 +25,9 @@ class IdentitySerializers(serializers.ModelSerializer):
             "sinner",
             "passive_on_field",
             "passive_off_field",
-            "skills",
+            "skill_1",
+            "skill_2",
+            "skill_3",
             "resistance_wrath",
             "resistance_lust",
             "resistance_sloth",
@@ -36,6 +38,7 @@ class IdentitySerializers(serializers.ModelSerializer):
             "resistance_slash",
             "resistance_pierce",
             "resistance_blunt",
+            "image_link",
         ]
 
 
@@ -62,7 +65,8 @@ class EGOSerializers(serializers.ModelSerializer):
             "sinner",
             "passive_on_field",
             "passive_off_field",
-            "skills",
+            "awakening_skill",
+            "corrision_skill",
             "resistance_wrath",
             "resistance_lust",
             "resistance_sloth",
@@ -73,4 +77,5 @@ class EGOSerializers(serializers.ModelSerializer):
             "resistance_slash",
             "resistance_pierce",
             "resistance_blunt",
+            "image_link",
         ]
