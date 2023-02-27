@@ -43,7 +43,7 @@ class Skill(models.Model):
     coindescs = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} {self.level}"
 
 
 class SkillEgo(models.Model):
@@ -55,7 +55,7 @@ class SkillEgo(models.Model):
     coindescs = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} {self.level}"
 
 
 class PassiveEnemy(models.Model):
