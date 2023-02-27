@@ -8,7 +8,7 @@ from .models import (
     PassiveEgo,
     PassiveEnemy,
     Skill,
-    SkillEgo
+    SkillEgo,
 )
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
@@ -41,6 +41,17 @@ class PassiveAbnormalityAdmin(ImportExportModelAdmin):
 
 admin.site.register(PassiveAbnormality, PassiveAbnormalityAdmin)
 
+# Passive EGO
+class PassiveEgoResource(resources.ModelResource):
+    class Meta:
+        model = PassiveEgo
+
+
+class PassiveEgoAdmin(ImportExportModelAdmin):
+    resource_class = PassiveEgoResource
+
+
+admin.site.register(PassiveEgo, PassiveEgoAdmin)
 # Skill
 class SkillResource(resources.ModelResource):
     class Meta:

@@ -72,8 +72,20 @@ class Identity(models.Model):
     name = models.CharField(max_length=50, null=True)
     rarity = models.IntegerField()
     sinner = models.ForeignKey(Sinner, on_delete=models.CASCADE)
-    passive_on_field = models.TextField(null=True, blank=True)
-    passive_off_field = models.TextField(null=True, blank=True)
+    passive_on_field = models.ForeignKey(
+        Passive,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="passive_on_field",
+    )
+    passive_off_field = models.ForeignKey(
+        Passive,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="passive_off_field",
+    )
     skill_1 = models.ForeignKey(
         Skill, null=True, blank=True, on_delete=models.CASCADE, related_name="skill_1"
     )
@@ -185,9 +197,21 @@ class EGO(models.Model):
         related_name="corrision_skill",
     )
 
-    passive_on_field = models.TextField(null=True, blank=True)
-    passive_off_field = models.TextField(null=True, blank=True, default=None)
-    # Sin Resistance
+    passive_on_field = models.ForeignKey(
+        PassiveEgo,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="passive_on_field",
+    )
+    passive_off_field = models.ForeignKey(
+        PassiveEgo,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="passive_off_field",
+    )
+    # # Sin Resistance
     resistance_wrath = models.CharField(
         max_length=1, choices=RESISTANCE_TYPES, default=NORMAL
     )

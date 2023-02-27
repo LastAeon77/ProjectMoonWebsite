@@ -3,6 +3,11 @@ from rest_framework import serializers
 
 
 class IdentitySerializers(serializers.ModelSerializer):
+    skill_1 = serializers.CharField(source="skill.name", allow_null=True)
+    skill_2 = serializers.CharField(source="skill.name", allow_null=True)
+    skill_3 = serializers.CharField(source="skill.name", allow_null=True)
+    passive_on_field = serializers.CharField(source="passive.name", allow_null=True)
+    passive_off_field = serializers.CharField(source="passive.name", allow_null=True)
     resistance_wrath = serializers.CharField(source="get_resistance_wrath_display")
     resistance_lust = serializers.CharField(source="get_resistance_lust_display")
     resistance_sloth = serializers.CharField(source="get_resistance_sloth_display")
@@ -43,6 +48,10 @@ class IdentitySerializers(serializers.ModelSerializer):
 
 
 class EGOSerializers(serializers.ModelSerializer):
+    awakening_skill = serializers.CharField(source="skillego.name", allow_null=True)
+    corrision_skill = serializers.CharField(source="skillego.name", allow_null=True)
+    passive_on_field = serializers.CharField(source="passiveego.name", allow_null=True)
+    passive_off_field = serializers.CharField(source="passiveego.name", allow_null=True)
     resistance_wrath = serializers.CharField(source="get_resistance_wrath_display")
     resistance_lust = serializers.CharField(source="get_resistance_lust_display")
     resistance_sloth = serializers.CharField(source="get_resistance_sloth_display")
