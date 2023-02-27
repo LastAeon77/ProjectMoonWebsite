@@ -23,7 +23,7 @@ class PassiveEgo(models.Model):
     desc = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} {self.abName}"
 
 
 class PassiveAbnormality(models.Model):
@@ -41,6 +41,8 @@ class Skill(models.Model):
     level = models.IntegerField()
     desc = models.TextField(null=True, blank=True)
     coindescs = models.TextField(null=True, blank=True)
+    coin_roll = models.TextField(null=True, blank=True)
+    coin_mod = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} {self.level}"
@@ -55,7 +57,7 @@ class SkillEgo(models.Model):
     coindescs = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.name} {self.level}"
+        return f"{self.name} {self.level} {self.abName}"
 
 
 class PassiveEnemy(models.Model):
