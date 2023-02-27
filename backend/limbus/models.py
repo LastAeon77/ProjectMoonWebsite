@@ -19,8 +19,8 @@ class Identity(models.Model):
     skill_2 = models.TextField(null=True, blank=True)
     skill_3 = models.TextField(null=True, blank=True)
     is_in_game = models.BooleanField(default=True)
-    hp = models.IntegerField(default=None,null=True)
-    block = models.IntegerField(default=None,null=True)
+    hp = models.IntegerField(default=None, null=True)
+    block = models.IntegerField(default=None, null=True)
     FATAL = "F"
     WEAK = "W"
     NORMAL = "N"
@@ -35,7 +35,7 @@ class Identity(models.Model):
         (INEFFECTIVE, "Ineffective"),
         (IMMUNE, "Immune"),
     ]
-    speed = models.CharField(max_length=10, default=None,null=True)
+    speed = models.CharField(max_length=10, default=None, null=True)
     # Sin Resistance
     resistance_wrath = models.CharField(
         max_length=1, choices=RESISTANCE_TYPES, default=NORMAL
@@ -78,7 +78,9 @@ class Identity(models.Model):
 class EGO(models.Model):
     name = models.CharField(max_length=50)
     rarity = models.IntegerField()
-    sinner = models.ForeignKey(Sinner, on_delete=models.CASCADE,null=True,default=None)
+    sinner = models.ForeignKey(
+        Sinner, on_delete=models.CASCADE, null=True, default=None
+    )
     is_in_game = models.BooleanField(default=True)
     FATAL = "F"
     WEAK = "W"
@@ -95,7 +97,7 @@ class EGO(models.Model):
         (INEFFECTIVE, "Ineffective"),
         (IMMUNE, "Immune"),
     ]
-    speed = models.CharField(max_length=10,null=True,blank=True)
+    speed = models.CharField(max_length=10, null=True, blank=True)
     resource_used_wrath = models.IntegerField(default=0)
     resource_used_lust = models.IntegerField(default=0)
     resource_used_sloth = models.IntegerField(default=0)
@@ -143,29 +145,36 @@ class EGO(models.Model):
 
     image_link = models.CharField(max_length=200, null=True, blank=True, default=None)
 
-
 class Passive(models.Model):
     in_game_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
-    desc = models.TextField()
+    desc = models.TextField(null=True, blank=True)
 
 
 class PassiveEgo(models.Model):
     in_game_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
-    desc = models.TextField()
+    desc = models.TextField(null=True, blank=True)
 
 
 class PassiveAbnormality(models.Model):
     in_game_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
-    desc = models.TextField()
+    desc = models.TextField(null=True, blank=True)
+
+
+class Skill(models.Model):
+    name = models.CharField(max_length=30)
+    in_game_id = models.CharField(max_length=10)
+    level = models.IntegerField()
+    desc = models.TextField(null=True, blank=True)
+    coindescs = models.TextField(null=True, blank=True)
 
 
 class PassiveEnemy(models.Model):
     in_game_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
-    desc = models.TextField()
+    desc = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name
