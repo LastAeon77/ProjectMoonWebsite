@@ -1,5 +1,29 @@
-from .models import Sinner, Identity, EGO
+from .models import Sinner, Identity, EGO, Passive, PassiveEgo, Skill, SkillEgo
 from rest_framework import serializers
+
+
+class SkillSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        fields = "__all__"
+
+
+class SkillEgoSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = SkillEgo
+        fields = "__all__"
+
+
+class PassiveSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Passive
+        fields = "__all__"
+
+
+class PassiveEgoSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = PassiveEgo
+        fields = "__all__"
 
 
 class IdentitySerializers(serializers.ModelSerializer):
