@@ -30,9 +30,10 @@ class PassiveEgo(models.Model):
     in_game_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
     desc = models.TextField(null=True, blank=True)
+    
 
     def __str__(self):
-        return f"{self.name} {self.abName}"
+        return f"{self.name}"
 
 
 class PassiveAbnormality(models.Model):
@@ -161,7 +162,7 @@ class Identity(models.Model):
     image_link = models.CharField(max_length=200, null=True, blank=True, default=None)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.sinner.name})"
 
 
 class EGO(models.Model):
@@ -260,4 +261,4 @@ class EGO(models.Model):
     image_link = models.CharField(max_length=200, null=True, blank=True, default=None)
 
     def __str__(self):
-        return self.name
+        return f"{self.name } {self.sinner.name}"

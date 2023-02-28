@@ -39,7 +39,7 @@ class EGOAdmin(ImportExportModelAdmin):
 
 
 admin.site.register(EGO, EGOAdmin)
-
+# admin.site.register(EGO)
 # Passive
 class PassiveResource(resources.ModelResource):
     class Meta:
