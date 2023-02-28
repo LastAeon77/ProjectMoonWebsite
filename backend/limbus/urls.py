@@ -11,4 +11,7 @@ urlpatterns = [
     path("passive_ego", views.PassiveEgoSerial.as_view(), name="passive_egoView"),
     path("identity", views.IdentitySerial.as_view(), name="identityView"),
     path("EGO", views.EGOSerial.as_view(), name="EGOView"),
+    path(
+        "battle_keyword", views.BattleKeywordSerial.as_view(), name="battle_keywordView"
+    ),
 ]

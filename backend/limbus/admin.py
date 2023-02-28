@@ -9,6 +9,7 @@ from .models import (
     PassiveEnemy,
     Skill,
     SkillEgo,
+    BattleKeywords,
 )
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
@@ -74,3 +75,16 @@ class SkillEgoAdmin(ImportExportModelAdmin):
 
 
 admin.site.register(SkillEgo, SkillEgoAdmin)
+
+# BattleKeywords
+
+class BattleKeywordsResource(resources.ModelResource):
+    class Meta:
+        model = BattleKeywords
+
+
+class BattleKeywordsAdmin(ImportExportModelAdmin):
+    resource_class = BattleKeywordsResource
+
+
+admin.site.register(BattleKeywords, BattleKeywordsAdmin)

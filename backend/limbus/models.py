@@ -8,6 +8,15 @@ class Sinner(models.Model):
         return self.name
 
 
+class BattleKeywords(models.Model):
+    in_game_id = models.CharField(max_length=10)
+    name = models.CharField(max_length=30)
+    desc = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Passive(models.Model):
     in_game_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
@@ -73,29 +82,29 @@ class PassiveEnemy(models.Model):
 class Identity(models.Model):
     name = models.CharField(max_length=50, null=True)
     rarity = models.IntegerField()
-    sinner = models.ForeignKey(Sinner, on_delete=models.CASCADE)
+    sinner = models.ForeignKey(Sinner, null=True, on_delete=models.SET_NULL)
     passive_on_field = models.ForeignKey(
         Passive,
         null=True,
         blank=True,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="passive_on_field",
     )
     passive_off_field = models.ForeignKey(
         Passive,
         null=True,
         blank=True,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="passive_off_field",
     )
     skill_1 = models.ForeignKey(
-        Skill, null=True, blank=True, on_delete=models.CASCADE, related_name="skill_1"
+        Skill, null=True, blank=True, on_delete=models.SET_NULL, related_name="skill_1"
     )
     skill_2 = models.ForeignKey(
-        Skill, null=True, blank=True, on_delete=models.CASCADE, related_name="skill_2"
+        Skill, null=True, blank=True, on_delete=models.SET_NULL, related_name="skill_2"
     )
     skill_3 = models.ForeignKey(
-        Skill, null=True, blank=True, on_delete=models.CASCADE, related_name="skill_3"
+        Skill, null=True, blank=True, on_delete=models.SET_NULL, related_name="skill_3"
     )
     is_in_game = models.BooleanField(default=True)
     hp = models.IntegerField(default=None, null=True)
@@ -158,7 +167,7 @@ class EGO(models.Model):
     name = models.CharField(max_length=50)
     rarity = models.IntegerField()
     sinner = models.ForeignKey(
-        Sinner, on_delete=models.CASCADE, null=True, default=None
+        Sinner, on_delete=models.SET_NULL, null=True, default=None
     )
     is_in_game = models.BooleanField(default=True)
     FATAL = "F"
@@ -188,14 +197,14 @@ class EGO(models.Model):
         SkillEgo,
         null=True,
         blank=True,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="awakening_skill",
     )
     corrision_skill = models.ForeignKey(
         SkillEgo,
         null=True,
         blank=True,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="corrision_skill",
     )
 
@@ -203,14 +212,14 @@ class EGO(models.Model):
         PassiveEgo,
         null=True,
         blank=True,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="passive_on_field",
     )
     passive_off_field = models.ForeignKey(
         PassiveEgo,
         null=True,
         blank=True,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="passive_off_field",
     )
     # # Sin Resistance

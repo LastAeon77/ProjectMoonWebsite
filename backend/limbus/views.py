@@ -1,4 +1,13 @@
-from .models import Sinner, Identity, EGO, Passive, PassiveEgo, Skill, SkillEgo
+from .models import (
+    Sinner,
+    Identity,
+    EGO,
+    Passive,
+    PassiveEgo,
+    Skill,
+    SkillEgo,
+    BattleKeywords,
+)
 from .serializers import (
     IdentitySerializers,
     EGOSerializers,
@@ -6,6 +15,7 @@ from .serializers import (
     SkillEgoSerializers,
     PassiveSerializers,
     PassiveEgoSerializers,
+    BattleKeywordsSerializers,
 )
 from rest_framework import generics, permissions
 
@@ -44,3 +54,9 @@ class EGOSerial(generics.ListAPIView):
     permission_classes = (permissions.AllowAny,)
     queryset = EGO.objects.all()
     serializer_class = EGOSerializers
+
+
+class BattleKeywordSerial(generics.ListAPIView):
+    permission_classes = (permissions.AllowAny,)
+    queryset = BattleKeywords.objects.all()
+    serializer_class = BattleKeywordsSerializers

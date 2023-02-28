@@ -1,4 +1,13 @@
-from .models import Sinner, Identity, EGO, Passive, PassiveEgo, Skill, SkillEgo
+from .models import (
+    Sinner,
+    Identity,
+    EGO,
+    Passive,
+    PassiveEgo,
+    Skill,
+    SkillEgo,
+    BattleKeywords,
+)
 from rest_framework import serializers
 
 
@@ -23,6 +32,12 @@ class PassiveSerializers(serializers.ModelSerializer):
 class PassiveEgoSerializers(serializers.ModelSerializer):
     class Meta:
         model = PassiveEgo
+        fields = "__all__"
+
+
+class BattleKeywordsSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = BattleKeywords
         fields = "__all__"
 
 
