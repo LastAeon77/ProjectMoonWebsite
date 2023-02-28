@@ -16,8 +16,29 @@ from import_export.admin import ImportExportModelAdmin
 
 # Register your models here.
 admin.site.register(Sinner)
-admin.site.register(Identity)
-admin.site.register(EGO)
+# Identity
+class IdentityResource(resources.ModelResource):
+    class Meta:
+        model = Identity
+
+
+class IdentityAdmin(ImportExportModelAdmin):
+    resource_class = IdentityResource
+
+
+admin.site.register(Identity, IdentityAdmin)
+
+# Ego
+class EGOResource(resources.ModelResource):
+    class Meta:
+        model = EGO
+
+
+class EGOAdmin(ImportExportModelAdmin):
+    resource_class = EGOResource
+
+
+admin.site.register(EGO, EGOAdmin)
 
 # Passive
 class PassiveResource(resources.ModelResource):
@@ -77,6 +98,7 @@ class SkillEgoAdmin(ImportExportModelAdmin):
 admin.site.register(SkillEgo, SkillEgoAdmin)
 
 # BattleKeywords
+
 
 class BattleKeywordsResource(resources.ModelResource):
     class Meta:

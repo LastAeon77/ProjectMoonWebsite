@@ -83,6 +83,7 @@ class Identity(models.Model):
     name = models.CharField(max_length=50, null=True)
     rarity = models.IntegerField()
     sinner = models.ForeignKey(Sinner, null=True, on_delete=models.SET_NULL)
+    in_game_id = models.CharField(max_length=10, null=True, blank=True)
     passive_on_field = models.ForeignKey(
         Passive,
         null=True,
@@ -166,6 +167,7 @@ class Identity(models.Model):
 class EGO(models.Model):
     name = models.CharField(max_length=50)
     rarity = models.IntegerField()
+    in_game_id = models.CharField(max_length=10, null=True, blank=True)
     sinner = models.ForeignKey(
         Sinner, on_delete=models.SET_NULL, null=True, default=None
     )
