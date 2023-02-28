@@ -9,7 +9,7 @@ class Sinner(models.Model):
 
 
 class BattleKeywords(models.Model):
-    in_game_id = models.CharField(max_length=10)
+    in_game_id = models.CharField(max_length=30)
     name = models.CharField(max_length=30)
     desc = models.TextField(null=True, blank=True)
 
