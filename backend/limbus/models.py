@@ -30,7 +30,6 @@ class PassiveEgo(models.Model):
     in_game_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
     desc = models.TextField(null=True, blank=True)
-    
 
     def __str__(self):
         return f"{self.name}"
@@ -55,7 +54,7 @@ class Skill(models.Model):
     coin_mod = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.name} {self.level}"
+        return f"{self.name} {self.level} {self.in_game_id}"
 
 
 class SkillEgo(models.Model):
