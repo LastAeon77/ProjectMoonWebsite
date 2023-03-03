@@ -108,7 +108,7 @@ class Identity(models.Model):
         related_name="passive_off_field",
     )
     growth = models.DecimalField(decimal_places=2, max_digits=6, null=True)
-    affinity = models.CharField(max_length=200, null=True, blank=True)
+    affinity = models.TextField(null=True, blank=True)
     base_damage = models.DecimalField(decimal_places=2, max_digits=6, null=True)
     skill_1 = models.ForeignKey(
         Skill, null=True, blank=True, on_delete=models.SET_NULL, related_name="skill_1"
