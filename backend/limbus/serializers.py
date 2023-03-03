@@ -47,15 +47,15 @@ class IdentitySerializers(serializers.ModelSerializer):
     skill_3 = serializers.StringRelatedField(allow_null=True)
     passive_on_field = serializers.StringRelatedField(allow_null=True)
     passive_off_field = serializers.StringRelatedField(allow_null=True)
-    resistance_wrath = serializers.CharField(source="get_resistance_wrath_display")
-    resistance_lust = serializers.CharField(source="get_resistance_lust_display")
-    resistance_sloth = serializers.CharField(source="get_resistance_sloth_display")
-    resistance_gluttony = serializers.CharField(
-        source="get_resistance_gluttony_display"
-    )
-    resistance_gloom = serializers.CharField(source="get_resistance_gloom_display")
-    resistance_pride = serializers.CharField(source="get_resistance_pride_display")
-    resistance_envy = serializers.CharField(source="get_resistance_envy_display")
+    # resistance_wrath = serializers.CharField(source="get_resistance_wrath_display")
+    # resistance_lust = serializers.CharField(source="get_resistance_lust_display")
+    # resistance_sloth = serializers.CharField(source="get_resistance_sloth_display")
+    # resistance_gluttony = serializers.CharField(
+    #     source="get_resistance_gluttony_display"
+    # )
+    # resistance_gloom = serializers.CharField(source="get_resistance_gloom_display")
+    # resistance_pride = serializers.CharField(source="get_resistance_pride_display")
+    # resistance_envy = serializers.CharField(source="get_resistance_envy_display")
     resistance_slash = serializers.CharField(source="get_resistance_slash_display")
     resistance_pierce = serializers.CharField(source="get_resistance_pierce_display")
     resistance_blunt = serializers.CharField(source="get_resistance_blunt_display")
