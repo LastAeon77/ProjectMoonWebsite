@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 
 
 class Sinner(models.Model):
@@ -50,8 +51,10 @@ class Skill(models.Model):
     level = models.IntegerField()
     desc = models.TextField(null=True, blank=True)
     coindescs = models.TextField(null=True, blank=True)
-    coin_roll = models.TextField(null=True, blank=True)
-    coin_mod = models.TextField(null=True, blank=True)
+    coin_num = models.IntegerField(null=True, blank=True)
+    coin_roll = models.IntegerField(null=True, blank=True)
+    coin_mod = models.IntegerField(null=True, blank=True)
+    type = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} {self.level} {self.in_game_id}"
@@ -64,6 +67,10 @@ class SkillEgo(models.Model):
     desc = models.TextField(null=True, blank=True)
     abName = models.CharField(max_length=30)
     coindescs = models.TextField(null=True, blank=True)
+    coin_num = models.IntegerField(null=True, blank=True)
+    coin_roll = models.IntegerField(null=True, blank=True)
+    coin_mod = models.IntegerField(null=True, blank=True)
+    type = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} {self.level} {self.abName}"
@@ -98,15 +105,21 @@ class Identity(models.Model):
         on_delete=models.SET_NULL,
         related_name="passive_off_field",
     )
+    growth = models.DecimalField(decimal_places=2,max_digits=6,null=True)
+    affinity = models.CharField(max_length=200,null=True,blank=True)
+    base_damage = models.DecimalField(decimal_places=2,max_digits=6,null=True)
     skill_1 = models.ForeignKey(
         Skill, null=True, blank=True, on_delete=models.SET_NULL, related_name="skill_1"
     )
+    skill_1_count = models.IntegerField(default=3)
     skill_2 = models.ForeignKey(
         Skill, null=True, blank=True, on_delete=models.SET_NULL, related_name="skill_2"
     )
+    skill_2_count = models.IntegerField(default=2)
     skill_3 = models.ForeignKey(
         Skill, null=True, blank=True, on_delete=models.SET_NULL, related_name="skill_3"
     )
+    skill_3_count = models.IntegerField(default=1)
     is_in_game = models.BooleanField(default=True)
     hp = models.IntegerField(default=None, null=True)
     block = models.IntegerField(default=None, null=True)
