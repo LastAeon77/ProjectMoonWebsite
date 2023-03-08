@@ -1,6 +1,7 @@
 # ProjectMoonWebsite
 
 You can visit website at: https://malcute.aeonmoon.page/
+
 An example API: https://malcute.aeonmoon.page/api/lor/deck
 
 A full-stack website with Frontend and backend configuration. Note that the secret key for Django is not included, so the user must make it themselves.
