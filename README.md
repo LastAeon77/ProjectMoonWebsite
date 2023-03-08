@@ -15,7 +15,7 @@ It provides API for the frontend in Next.js, and also my discord bot which can b
 # Database
 The database used is postgreSQL, where django mostly interact with it without needing direct SQL query or interface.
 # Nginx
-Nginx provides a service to redirect user to django or next.js as needed. If you do /api or /admin, it goes straight to backend (Django), otherwise it goes to frontene
+Nginx provides a service to redirect user to django or next.js as needed. If you do /api or /admin, it goes straight to backend (Django), otherwise it goes to frontend
 # Certbot
 Using code from: https://github.com/wmnnd/nginx-certbot, we have a script to initially start our certbot, which will then call a bash to certbot with letsencrypt every
 12 hours for new certification to allow usage of https.
