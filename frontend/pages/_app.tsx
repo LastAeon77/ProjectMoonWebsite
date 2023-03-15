@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../components/navbar";
 
+// This makes sure we call our own domain for information when you set your own domain.
 if (typeof window !== "undefined") {
   axios.defaults.baseURL = window.location.origin;
 }
