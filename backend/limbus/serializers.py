@@ -18,9 +18,24 @@ class SkillSerializers(serializers.ModelSerializer):
 
 
 class SkillEgoSerializers(serializers.ModelSerializer):
+    emotion_type = serializers.CharField(source="get_emotion_type_display")
+
     class Meta:
         model = SkillEgo
-        fields = "__all__"
+        fields = [
+            "name",
+            "in_game_id",
+            "level",
+            "emotion_type",
+            "desc",
+            "abName",
+            "coindescs",
+            "coin_num",
+            "coin_roll",
+            "coin_mod",
+            "type",
+            "damage_type",
+        ]
 
 
 class PassiveSerializers(serializers.ModelSerializer):

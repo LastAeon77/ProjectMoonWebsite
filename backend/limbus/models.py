@@ -65,6 +65,13 @@ class SkillEgo(models.Model):
     name = models.CharField(max_length=30)
     in_game_id = models.CharField(max_length=10)
     level = models.IntegerField()
+    AWAKENING = "A"
+    CORRISION = "C"
+
+    SKILL_EMOTION_TYPE = [(AWAKENING, "Awakening"), (CORRISION, "Corrision")]
+    emotion_type = models.CharField(
+        max_length=1, choices=SKILL_EMOTION_TYPE, default=AWAKENING
+    )
     desc = models.TextField(null=True, blank=True)
     abName = models.CharField(max_length=30)
     coindescs = models.TextField(null=True, blank=True)
