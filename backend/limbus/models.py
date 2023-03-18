@@ -82,7 +82,7 @@ class SkillEgo(models.Model):
     damage_type = models.CharField(max_length=30, default="Blunt")
 
     def __str__(self):
-        return f"{self.name} {self.level} {self.abName}"
+        return f"{self.name} {self.level} {self.abName} {self.emotion_type}"
 
 
 class PassiveEnemy(models.Model):
