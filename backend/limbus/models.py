@@ -72,6 +72,7 @@ class SkillEgo(models.Model):
     emotion_type = models.CharField(
         max_length=1, choices=SKILL_EMOTION_TYPE, default=AWAKENING
     )
+    character = models.ForeignKey(Sinner,null=True,on_delete=models.SET_NULL)
     desc = models.TextField(null=True, blank=True)
     abName = models.CharField(max_length=30)
     coindescs = models.TextField(null=True, blank=True)
@@ -82,7 +83,7 @@ class SkillEgo(models.Model):
     damage_type = models.CharField(max_length=30, default="Blunt")
 
     def __str__(self):
-        return f"{self.name} {self.level} {self.abName} {self.emotion_type}"
+        return f"{self.name} {self.level} {self.character} {self.emotion_type}"
 
 
 class PassiveEnemy(models.Model):

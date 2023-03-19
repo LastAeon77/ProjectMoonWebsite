@@ -19,13 +19,14 @@ class SkillSerializers(serializers.ModelSerializer):
 
 class SkillEgoSerializers(serializers.ModelSerializer):
     emotion_type = serializers.CharField(source="get_emotion_type_display")
-
+    character = serializers.StringRelatedField(allow_null=True)
     class Meta:
         model = SkillEgo
         fields = [
             "name",
             "in_game_id",
             "level",
+            "character"
             "emotion_type",
             "desc",
             "abName",
