@@ -1,5 +1,16 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django.db.models import TextField
+
+
+class NonStrippingTextField(TextField):
+    """A TextField that does not strip whitespace at the beginning/end of
+    it's value."""
+
+    def formfield(self, **kwargs):
+        kwargs['strip'] = False
+        return super(NonStrippingTextField, self).formfield(**kwargs)
+    
 
 
 class Sinner(models.Model):
@@ -50,7 +61,7 @@ class Skill(models.Model):
     in_game_id = models.CharField(max_length=10)
     level = models.IntegerField()
     desc = models.TextField(null=True, blank=True)
-    coindescs = models.TextField(null=True, blank=True)
+    coindescs = NonStrippingTextField(blank=True)
     coin_num = models.IntegerField(null=True, blank=True)
     coin_roll = models.IntegerField(null=True, blank=True)
     coin_mod = models.IntegerField(null=True, blank=True)
@@ -75,7 +86,7 @@ class SkillEgo(models.Model):
     character = models.ForeignKey(Sinner,null=True,on_delete=models.SET_NULL)
     desc = models.TextField(null=True, blank=True)
     abName = models.CharField(max_length=30)
-    coindescs = models.TextField(null=True, blank=True)
+    coindescs = NonStrippingTextField(blank=True)
     coin_num = models.IntegerField(null=True, blank=True)
     coin_roll = models.IntegerField(null=True, blank=True)
     coin_mod = models.IntegerField(null=True, blank=True)
