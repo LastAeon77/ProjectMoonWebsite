@@ -6,7 +6,7 @@ WORKDIR /app/frontend
 RUN npm install --global pm2
 COPY ./frontend/package.json ./
 COPY ./frontend/package-lock.json ./
-RUN npm ci --silent
+RUN npm install
 COPY ./frontend/ ./
 EXPOSE 3000
 USER node

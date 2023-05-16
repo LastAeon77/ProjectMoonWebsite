@@ -25,8 +25,8 @@ const Login = () => {
         .then((res) => {
           localStorage.setItem("access_token", res.data.access);
           localStorage.setItem("refresh_token", res.data.refresh);
-          if (prevUrl!== null && prevUrl !== undefined) {
-            router.push(`/${prevUrl}`);
+          if (prevUrl) {
+            router.push(`/`);
           } else {
             router.push("/");
           }
