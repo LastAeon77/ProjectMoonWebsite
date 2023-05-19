@@ -25,10 +25,19 @@ admin.site.register(Effects)
 admin.site.register(RelGuide)
 admin.site.register(AbnoCards)
 
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
+
 
 # This is a small modification to make setting large amount of card's offices differently easier
-class CardAdmin(admin.ModelAdmin):
 
+class CardResource(resources.ModelResource):
+    class Meta:
+        model = Card
+
+
+class CardAdmin(ImportExportModelAdmin):
+    resource_class = CardResource
     _update_fields = (
         ("Make Rat", "make_rat", 1),
         ("Make Yun", "make_Yun", 2),
