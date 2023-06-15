@@ -199,7 +199,6 @@ namespace LobotomyDatabase.Controllers
 				return Content("Bad Request");
 			}
 			_context.Abnormalities.Remove(to_be_deleted);
-			_context.SaveChanges();
 			await _context.SaveChangesAsync();
 
 			return NoContent();
