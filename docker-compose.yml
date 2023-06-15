@@ -21,6 +21,7 @@ services:
     depends_on: 
         - backend
         - nextjs
+        - asp_backend
     #just added this
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
   certbot:
@@ -59,7 +60,33 @@ services:
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=postgres
         - POSTGRES_DB=postgres
+  asp_backend:
 
+      build:
+        context: ./LobotomyDatabase
+        dockerfile: ./Dockerfile.Prod
+      expose:
+        - 80
+        - 443
+      environment:
+        - ASPNETCORE_URLS=http://+:80
+      depends_on:
+        - db_2
+  db_2:
+      image: postgres:13-alpine
+      volumes:
+        - postgres_data_prod_2:/var/lib/postgresql/data/
+      expose:
+        - 5432
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=/run/secrets/db_2_password
+        - POSTGRES_DB=postgres
+
+secrets:
+  db_2_password:
+    file: ./SA_PASSWORD.txt
 volumes:
   static_volume: {}
   postgres_data_prod:
+  postgres_data_prod_2:
