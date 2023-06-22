@@ -35,6 +35,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework.views import APIView
 from rest_framework import status, permissions
+from django.contrib.auth import get_user_model
 
 # DetailView will fetch a certain row through its unique id in url
 # ListView will fetch all rows of a Relation
@@ -114,7 +115,7 @@ class DeckCreate(APIView):
         # new_request["effect"] = list(map(int, new_request["effect"].split(",")))
         new_request["cards"] = list(map(str, new_request["cards"].split("|")))
         new_request["cards"] = list(map(json.loads, new_request["cards"]))
-        new_request["creator"] = request.user.id
+        # new_request["creator"] = request.user.id
         curr_effects = new_request.pop(
             "effect"
         )  # Take out effect to individually save it
@@ -122,6 +123,8 @@ class DeckCreate(APIView):
         serializer = DeckCreatorSerializer(data=new_request)
         if serializer.is_valid():
             deck = serializer.save()  # Created a deck instance
+            deck.creator_new = get_user_model().objects.get(pk=request.user.id)
+            deck.save()
             curr_deck_pk = deck.pk
             # Starting to create multiple RelDeck instances and saving it for each card
             for ordinary_dict in curr_cards:

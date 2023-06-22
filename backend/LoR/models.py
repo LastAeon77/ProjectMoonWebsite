@@ -226,7 +226,12 @@ class Deck(models.Model):
     # creator = models.ForeignKey(
     #     settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
     # )
+    # This one causes error and must be deprecated
     creator = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True)
+    
+    # This is the new one for the future users.
+    creator_new = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, related_name="creator_new")
+
     description = models.TextField()
     cards = models.ManyToManyField(Card, through="RelDeck")
     Recc_Floor = models.ForeignKey(

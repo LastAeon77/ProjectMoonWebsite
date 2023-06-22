@@ -33,7 +33,7 @@ class DeckSerializers(serializers.ModelSerializer):
     Recc_Floor = serializers.StringRelatedField(read_only=True)
     Recc_Page = serializers.StringRelatedField(read_only=True)
     Recc_Rank = serializers.StringRelatedField(read_only=True)
-    creator = serializers.StringRelatedField(read_only=True)
+    creator = serializers.SerializerMethodField('creator_get')
 
     class Meta:
         model = Deck
@@ -42,6 +42,12 @@ class DeckSerializers(serializers.ModelSerializer):
     def get_card_count(self, instance):
         reldecks = instance.reldeck_set.all().order_by("card_id")
         return CardCountSerializers(reldecks, many=True).data
+
+    def creator_get(self,instance):
+        if (instance.creator):
+            return str(instance.creator)
+        else:
+            return str(instance.creator_new)
 
 
 class CardSerializers(serializers.ModelSerializer):
@@ -185,7 +191,6 @@ class DeckCreatorSerializer(serializers.ModelSerializer):
         model = Deck
         fields = [
             "name",
-            "creator",
             "description",
             "Recc_Floor",
             "Recc_Page",
