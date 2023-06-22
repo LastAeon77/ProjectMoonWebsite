@@ -5,83 +5,82 @@ services:
     build:
       context: .
       dockerfile: ./docker/nextjs/Dockerfile
-  nginx: 
+  nginx:
     restart: unless-stopped
     build:
-        context: .
-        dockerfile: ./docker/nginx/Dockerfile
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
     ports:
-        - 80:80
-        - 443:443
+      - 80:80
+      - 443:443
     volumes:
-        - static_volume:/app/backend/django_static
-        - ./docker/nginx/production:/etc/nginx/conf.d
-        - ./docker/nginx/certbot/conf:/etc/letsencrypt
-        - ./docker/nginx/certbot/www:/var/www/certbot
-    depends_on: 
-        - backend
-        - nextjs
-        - asp_backend
-    #just added this
+      - static_volume:/app/backend/django_static
+      - ./docker/nginx/production:/etc/nginx/conf.d
+      - ./docker/nginx/certbot/conf:/etc/letsencrypt
+      - ./docker/nginx/certbot/www:/var/www/certbot
+      # depends_on: 
+      # - backend
+      # - nextjs
+      # - asp_backend
+      #just added this
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
   certbot:
-      image: certbot/certbot:latest
-      restart: unless-stopped
-      volumes:
-          - ./docker/nginx/certbot/conf:/etc/letsencrypt
-          - ./docker/nginx/certbot/www:/var/www/certbot
-      entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    image: certbot/certbot:latest
+    restart: unless-stopped
+    volumes:
+      - ./docker/nginx/certbot/conf:/etc/letsencrypt
+      - ./docker/nginx/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
   backend:
-      build:
-        context: .
-        dockerfile: ./docker/backend/Dockerfile
-      command: bash -c 'cd /app/backend; while !</dev/tcp/db/5432; do sleep 1; done; gunicorn --bind 0.0.0.0:8000 backend.wsgi; python3 manage.py migrate'
-      # entrypoint: /app/docker/backend/wsgi-entrypoint.sh
-      volumes:
-        - static_volume:/app/backend/django_static
-      environment:
-        - DEBUG=0
-        - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
-        - DJANGO_ALLOWED_HOSTS=.aeonmoon.page
-      depends_on:
-        - db
-      expose: 
-        - 8000
-      mem_limit:
-          "300M"
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    command: bash -c 'cd /app/backend; while !</dev/tcp/db/5432; do sleep 1; done; gunicorn --bind 0.0.0.0:8000 backend.wsgi;'
+    # entrypoint: /app/docker/backend/wsgi-entrypoint.sh
+    volumes:
+      - static_volume:/app/backend/django_static
+    environment:
+      - DEBUG=0
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+      - DJANGO_ALLOWED_HOSTS=.aeonmoon.page
+    depends_on:
+      - db
+    expose:
+      - 8000
+    mem_limit: "300M"
   db:
-      image: postgres:13-alpine
-      volumes:
-        - postgres_data_prod:/var/lib/postgresql/data/
-      expose:
-        - 5432
-      environment:
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=postgres
-        - POSTGRES_DB=postgres
-  asp_backend:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data/
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+  # asp_backend:
 
-      build:
-        context: ./LobotomyDatabase
-        dockerfile: ./Dockerfile.Prod
-      expose:
-        - 80
-        - 443
-      environment:
-        - ASPNETCORE_URLS=http://+:80
-      depends_on:
-        - db_2
-  db_2:
-      image: postgres:13-alpine
-      volumes:
-        - postgres_data_prod_2:/var/lib/postgresql/data/
-      expose:
-        - 5432
-      environment:
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=/run/secrets/db_2_password
-        - POSTGRES_DB=postgres
+  #     build:
+  #       context: ./LobotomyDatabase
+  #       dockerfile: ./Dockerfile.Prod
+  #     expose:
+  #       - 80
+  #       - 443
+  #     environment:
+  #       - ASPNETCORE_URLS=http://+:80
+  #     depends_on:
+  #       - db_2
+  # db_2:
+  #     image: postgres:13-alpine
+  #     volumes:
+  #       - postgres_data_prod_2:/var/lib/postgresql/data/
+  #     expose:
+  #       - 5432
+  #     environment:
+  #       - POSTGRES_USER=postgres
+  #       - POSTGRES_PASSWORD=/run/secrets/db_2_password
+  #       - POSTGRES_DB=postgres
 
 secrets:
   db_2_password:
