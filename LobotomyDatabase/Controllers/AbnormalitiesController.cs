@@ -68,7 +68,7 @@ namespace LobotomyDatabase.Controllers
 					in_game_id = x.in_game_id,
 					Name = x.Name,
 					NumCode = x.NumCode,
-					RiskLevel = nameof(x.RiskLevel),
+					RiskLevel = Enum.GetName<RiskLevel>((RiskLevel)x.RiskLevel),
 					OpenText = x.OpenText,
 					Stories = x.Stories.Select(y => new AbnormailityStoryDto()
 					{
@@ -143,7 +143,7 @@ namespace LobotomyDatabase.Controllers
 		// POST: api/Abnormalities
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPost]
-		public async Task<ActionResult<Abnormality>> PostAbnormality([FromBody] AbnormailityDto abnormality)
+		public async Task<ActionResult<AbnormailityDto>> PostAbnormality([FromBody] AbnormailityDto abnormality)
 		{
 			if (_context.Abnormalities == null)
 			{
@@ -185,8 +185,8 @@ namespace LobotomyDatabase.Controllers
 			}
 			_context.Abnormalities.Add(ab);
 			await _context.SaveChangesAsync();
-
-			return CreatedAtAction("GetAbnormality", abnormality);
+			
+			return abnormality;
 		}
 
 		// DELETE: api/Abnormalities/5
