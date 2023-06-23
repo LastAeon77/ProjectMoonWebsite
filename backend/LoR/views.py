@@ -147,7 +147,7 @@ class DeckCreate(APIView):
 
 class CardNameID(generics.ListAPIView):
     permission_classes = (permissions.AllowAny,)
-    queryset = Card.objects.all()
+    queryset = Card.objects.all().order_by("Name")
     serializer_class = CardIDSerializer
 
 
