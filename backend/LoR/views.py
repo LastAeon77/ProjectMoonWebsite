@@ -179,3 +179,22 @@ class PageView(generics.ListAPIView):
     permission_classes = (permissions.AllowAny,)
     queryset = Page.objects.all()
     serializer_class = PageSerializer
+
+
+class DeckDelete(APIView):
+    def post(self, request, format="json"):
+        deck_id = request.data["id"]
+        deck_instance = Deck.objects.get(pk=deck_id)
+        if not deck_instance:
+            return Response("The deck no longer exists", status=status.HTTP_404_NOT_FOUND)
+        if deck_instance.creator == request.user or deck_instance.creator_new == request.user:
+            deck_instance.delete()
+            return Response("Deleted deck", status = status.HTTP_200_OK)
+        else:
+            return Response("Unauthorized request", status=status.HTTP_403_FORBIDDEN)
+        
+class deckSerialOwner(generics.ListAPIView):
+    queryset = Deck.objects.all()
+    serializer_class = DeckSerializers
+    def get_queryset(self):
+        return Deck.objects.filter(creator_new = self.request.user)
