@@ -193,7 +193,7 @@ class DeckDelete(APIView):
         else:
             return Response("Unauthorized request", status=status.HTTP_403_FORBIDDEN)
         
-class deckSerialOwner(generics.ListAPIView):
+class UserDecks(generics.ListAPIView):
     queryset = Deck.objects.all()
     serializer_class = DeckSerializers
     def get_queryset(self):

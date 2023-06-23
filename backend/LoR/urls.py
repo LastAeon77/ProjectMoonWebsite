@@ -22,4 +22,6 @@ urlpatterns = [
     path("lor/deckcreate/", views.DeckCreate.as_view(), name="DeckCreate"),
     path("lor/office", views.OfficeAll.as_view(), name="AllOffice"),
     path("lor/page", views.PageView.as_view(), name="PageList"),
+    path("lor/delete_deck", views.DeckDelete.as_view(), name="DeleteDeck"),
+    path("lor/userdecks", views.UserDecks.as_view(), name="UserDecks"),
 ] + staticfiles_urlpatterns()
