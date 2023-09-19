@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import MyTokenObtainPairSerializer, NuggetSerializer
+from .models import Nugget
 
 
 class ObtainTokenPairWithColorView(TokenObtainPairView):
@@ -16,6 +17,8 @@ class CustomUserCreate(APIView):
     def post(self, request, format="json"):
         serializer = NuggetSerializer(data=request.data)
         if serializer.is_valid():
+            if Nugget.objects.filter(username=request.data['username']).exists():
+                return Response(f"Username {request.data['username']} already exists", status=status.HTTP_400_BAD_REQUEST)
             user = serializer.save()
             if user:
                 json = serializer.data
