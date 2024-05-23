@@ -36,6 +36,9 @@ from django.views.decorators.cache import cache_page
 from rest_framework.views import APIView
 from rest_framework import status, permissions
 from django.contrib.auth import get_user_model
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes
+
 
 # DetailView will fetch a certain row through its unique id in url
 # ListView will fetch all rows of a Relation
@@ -75,6 +78,13 @@ class EffectListView(generics.ListAPIView):
     permission_classes = (permissions.AllowAny,)
     queryset = Effects.objects.all()
     serializer_class = EffectSerializers
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_deck_name_list(request):
+    content = Deck.objects.values_list("id","name")
+    return Response(content)
+    
 
 
 def get_cards():
