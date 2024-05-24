@@ -84,7 +84,10 @@ class EffectListView(generics.ListAPIView):
 @permission_classes([AllowAny])
 def get_deck_name_list(request):
     content = Deck.objects.values_list("id","name")
-    return Response(content)
+    result = []
+    for con in content:
+        result.append({"id":con[0],"name":con[1],"highest_rank":Deck.objects.get(pk=con[0]).get_highest_rank()})
+    return Response(result)
     
 
 @api_view(['GET'])
