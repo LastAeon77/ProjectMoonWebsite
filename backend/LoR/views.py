@@ -79,12 +79,19 @@ class EffectListView(generics.ListAPIView):
     queryset = Effects.objects.all()
     serializer_class = EffectSerializers
 
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_deck_name_list(request):
     content = Deck.objects.values_list("id","name")
     return Response(content)
     
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def deck_count(request):
+    content = Deck.objects.count()
+    return Response(content)
 
 
 def get_cards():

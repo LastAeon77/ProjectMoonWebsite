@@ -258,6 +258,13 @@ class Deck(models.Model):
     def description_as_list(self):
         return self.description.splitlines()
 
+    def get_highest_rank(self):
+        related_cards = RelDeck.objects.filter(deck_id=self.pk)
+        max_rank = -1
+        for ca in related_cards:
+            curr_card = ca.card_id
+            max_rank = max(curr_card.office.Rank.pk,max_rank)
+        return max_rank
 
 # join table for deck and cards
 class RelDeck(models.Model):
