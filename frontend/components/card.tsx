@@ -3,7 +3,7 @@ import axios from "axios";
 import { Box } from "@mui/system";
 import { imgur_or_static } from "./misc";
 import Link from "next/link";
-import Image from "next/dist/client/image";
+import Image from "next/image";
 import { game_card_light } from "./types";
 export type game_card = {
   office: string;

@@ -24,7 +24,7 @@ class CardDeckSerializers(serializers.ModelSerializer):
     rank = serializers.ReadOnlyField(source="office.Rank.Name")
     class Meta:
         model = Card
-        fields = ["Name", "ImgPath","rank"]
+        fields = ["Name", "ImgPath"]
 
 
 class DeckSerializers(serializers.ModelSerializer):
@@ -35,6 +35,7 @@ class DeckSerializers(serializers.ModelSerializer):
     Recc_Page = serializers.StringRelatedField(read_only=True)
     Recc_Rank = serializers.StringRelatedField(read_only=True)
     creator = serializers.SerializerMethodField('creator_get')
+    highest_rank = serializers.SerializerMethodField('get_highest_rank')
 
     class Meta:
         model = Deck
@@ -49,6 +50,12 @@ class DeckSerializers(serializers.ModelSerializer):
             return str(instance.creator)
         else:
             return str(instance.creator_new)
+    
+    def get_highest_rank(self,instance):
+        max_rank = -1
+        for card in instance.cards.all():
+            max_rank = max(card.office.Rank.pk,max_rank)
+        return max_rank
 
 
 class CardSerializers(serializers.ModelSerializer):
