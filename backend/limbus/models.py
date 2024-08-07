@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.db.models import TextField
+from django.utils.translation import gettext_lazy as _
 
 
 class NonStrippingTextField(TextField):
@@ -30,7 +31,6 @@ class BattleKeywords(models.Model):
 
 
 class Passive(models.Model):
-    in_game_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
     desc = models.TextField(null=True, blank=True)
 
@@ -39,7 +39,6 @@ class Passive(models.Model):
 
 
 class PassiveEgo(models.Model):
-    in_game_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
     desc = models.TextField(null=True, blank=True)
 
@@ -48,28 +47,11 @@ class PassiveEgo(models.Model):
 
 
 class PassiveAbnormality(models.Model):
-    in_game_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
     desc = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name
-
-
-class Skill(models.Model):
-    name = models.CharField(max_length=30)
-    in_game_id = models.CharField(max_length=10)
-    level = models.IntegerField()
-    desc = models.TextField(null=True, blank=True)
-    coindescs = NonStrippingTextField(blank=True)
-    coin_num = models.IntegerField(null=True, blank=True)
-    coin_roll = models.IntegerField(null=True, blank=True)
-    coin_mod = models.IntegerField(null=True, blank=True)
-    type = models.TextField(null=True, blank=True)
-    damage_type = models.CharField(max_length=30, default="Blunt")
-
-    def __str__(self):
-        return f"{self.name} {self.level} {self.in_game_id}"
 
 
 class SkillEgo(models.Model):
@@ -111,37 +93,10 @@ class Identity(models.Model):
     name = models.CharField(max_length=50, null=True)
     rarity = models.IntegerField()
     sinner = models.ForeignKey(Sinner, null=True, on_delete=models.SET_NULL)
-    in_game_id = models.CharField(max_length=10, null=True, blank=True)
-    passive_on_field = models.ForeignKey(
-        Passive,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="passive_on_field",
-    )
-    passive_off_field = models.ForeignKey(
-        Passive,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="passive_off_field",
-    )
-    growth = models.DecimalField(decimal_places=2, max_digits=6, null=True)
-    affinity = models.TextField(null=True, blank=True)
-    base_damage = models.DecimalField(decimal_places=2, max_digits=6, null=True)
-    skill_1 = models.ForeignKey(
-        Skill, null=True, blank=True, on_delete=models.SET_NULL, related_name="skill_1"
-    )
-    skill_1_count = models.IntegerField(default=3)
-    skill_2 = models.ForeignKey(
-        Skill, null=True, blank=True, on_delete=models.SET_NULL, related_name="skill_2"
-    )
-    skill_2_count = models.IntegerField(default=2)
-    skill_3 = models.ForeignKey(
-        Skill, null=True, blank=True, on_delete=models.SET_NULL, related_name="skill_3"
-    )
-    skill_3_count = models.IntegerField(default=1)
-    is_in_game = models.BooleanField(default=True)
+    # in_game_id = models.CharField(max_length=10, null=True, blank=True)
+    passive = models.TextField(null=True, blank=True)
+    support_passive = models.TextField(null=True, blank=True)
+    panic = models.TextField(null=True,blank=True)
     hp = models.IntegerField(default=None, null=True)
     block = models.IntegerField(default=None, null=True)
     FATAL = "F"
@@ -159,29 +114,7 @@ class Identity(models.Model):
         (IMMUNE, "Immune"),
     ]
     speed = models.CharField(max_length=10, default=None, null=True)
-    # Sin Resistance
-    resistance_wrath = models.CharField(
-        max_length=1, choices=RESISTANCE_TYPES, default=NORMAL
-    )
-    resistance_lust = models.CharField(
-        max_length=1, choices=RESISTANCE_TYPES, default=NORMAL
-    )
-    resistance_sloth = models.CharField(
-        max_length=1, choices=RESISTANCE_TYPES, default=NORMAL
-    )
-    resistance_gluttony = models.CharField(
-        max_length=1, choices=RESISTANCE_TYPES, default=NORMAL
-    )
-    resistance_gloom = models.CharField(
-        max_length=1, choices=RESISTANCE_TYPES, default=NORMAL
-    )
-    resistance_pride = models.CharField(
-        max_length=1, choices=RESISTANCE_TYPES, default=NORMAL
-    )
-    resistance_envy = models.CharField(
-        max_length=1, choices=RESISTANCE_TYPES, default=NORMAL
-    )
-
+    defense = models.IntegerField(default=43, null=True)
     # Physical Resistance
     resistance_slash = models.CharField(
         max_length=1, choices=RESISTANCE_TYPES, default=NORMAL
@@ -196,6 +129,45 @@ class Identity(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.sinner.name})"
+
+
+class Skill(models.Model):
+    class SinTypes(models.TextChoices):
+        WRATH = "WR", "Wrath"
+        LUST = "LU", "Lust"
+        SLOTH = "SL", "Sloth"
+        GLUTTONY = "GU", "Gluttony"
+        GLOOM = "GL", "Gloom"
+        PRIDE = "PR", "Pride"
+        ENVY = "EN", "Envy"
+
+    class SkillType(models.TextChoices):
+        BLUNT = "BT", "Blunt"
+        PIERCE = "PI", "Pierce"
+        SLASH = "SL", "Slash"
+        BLOCK = "BK", "Block"
+        EVADE = "EV", "Evade"
+        COUNTER = "CO", "Counter"
+
+    belonged_identity = models.ForeignKey(Identity,related_name="identity",on_delete=models.CASCADE,null=True)
+    name = models.CharField(max_length=30)
+    on_use = models.TextField(blank=True,null=True)
+    combat_start = models.TextField(blank=True,null=True)
+    coindescs = ArrayField(models.TextField(blank=True,null=True))
+    coin_roll = models.IntegerField(null=True, blank=True)
+    coin_mod = models.IntegerField(null=True, blank=True)
+    skill_type = models.CharField(max_length=2,
+                                   choices=SkillType.choices, 
+                                   default=SkillType.BLUNT)
+    sin_type = models.CharField(max_length=2,
+                                   choices=SinTypes.choices, 
+                                   default=SinTypes.WRATH)
+    weight = models.IntegerField(null=True,blank=True)
+    #basically how many skill in the deck
+    skill_num = models.IntegerField(null=True,blank = True)
+
+    def __str__(self):
+        return f"{self.name}"
 
 
 class EGO(models.Model):
