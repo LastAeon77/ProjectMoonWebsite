@@ -1,7 +1,7 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 from django.db.models import TextField
 from django.utils.translation import gettext_lazy as _
+from django_jsonform.models.fields import ArrayField
 
 
 class NonStrippingTextField(TextField):
@@ -153,9 +153,12 @@ class Skill(models.Model):
     name = models.CharField(max_length=30)
     on_use = models.TextField(blank=True,null=True)
     combat_start = models.TextField(blank=True,null=True)
-    coindescs = ArrayField(models.TextField(blank=True,null=True))
+    coindescs = ArrayField(
+            models.CharField(max_length=254,blank=True,null=True),
+            size=8,)
     coin_roll = models.IntegerField(null=True, blank=True)
     coin_mod = models.IntegerField(null=True, blank=True)
+    coin_num = models.IntegerField(null=True,blank=True)
     skill_type = models.CharField(max_length=2,
                                    choices=SkillType.choices, 
                                    default=SkillType.BLUNT)

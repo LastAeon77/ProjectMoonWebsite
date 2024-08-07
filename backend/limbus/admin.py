@@ -74,17 +74,7 @@ class PassiveEgoAdmin(ImportExportModelAdmin):
 
 
 admin.site.register(PassiveEgo, PassiveEgoAdmin)
-# Skill
-class SkillResource(resources.ModelResource):
-    class Meta:
-        model = Skill
-
-
-class SkillAdmin(ImportExportModelAdmin):
-    resource_class = SkillResource
-
-
-admin.site.register(Skill, SkillAdmin)
+admin.site.register(Skill)
 # SkillEGO
 class SkillEgoResource(resources.ModelResource):
     class Meta:
