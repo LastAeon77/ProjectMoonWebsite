@@ -33,7 +33,6 @@ class BattleKeywords(models.Model):
 class Passive(models.Model):
     name = models.CharField(max_length=30)
     desc = models.TextField(null=True, blank=True)
-
     def __str__(self):
         return self.name
 
@@ -128,7 +127,7 @@ class Identity(models.Model):
     image_link = models.CharField(max_length=200, null=True, blank=True, default=None)
 
     def __str__(self):
-        return f"{self.name} ({self.sinner.name})"
+        return f"[{self.sinner.name}] {self.name}"
 
 
 class Skill(models.Model):
@@ -151,6 +150,7 @@ class Skill(models.Model):
 
     belonged_identity = models.ForeignKey(Identity,related_name="identity",on_delete=models.CASCADE,null=True)
     name = models.CharField(max_length=30)
+    power = models.IntegerField(blank=True,null=True)
     on_use = models.TextField(blank=True,null=True)
     combat_start = models.TextField(blank=True,null=True)
     coindescs = ArrayField(
@@ -168,6 +168,7 @@ class Skill(models.Model):
     weight = models.IntegerField(null=True,blank=True)
     #basically how many skill in the deck
     skill_num = models.IntegerField(null=True,blank = True)
+    image = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -269,4 +270,4 @@ class EGO(models.Model):
     image_link = models.CharField(max_length=200, null=True, blank=True, default=None)
 
     def __str__(self):
-        return f"{self.name } {self.sinner.name}"
+        return f"{self.sinner.name} {self.name}"
