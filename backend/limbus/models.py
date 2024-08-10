@@ -85,6 +85,11 @@ class PassiveEnemy(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Faction(models.Model):
+    name = models.CharField(max_length=50)
+    def __str__(self) -> str:
+        return self.name
 
 
 # Create your models here.
@@ -125,7 +130,7 @@ class Identity(models.Model):
         max_length=1, choices=RESISTANCE_TYPES, default=NORMAL
     )
     image_link = models.CharField(max_length=200, null=True, blank=True, default=None)
-
+    faction = models.ForeignKey(Faction, null=True, blank=True, on_delete=models.CASCADE)
     def __str__(self):
         return f"[{self.sinner.name}] {self.name}"
 
@@ -165,7 +170,7 @@ class Skill(models.Model):
     sin_type = models.CharField(max_length=2,
                                    choices=SinTypes.choices, 
                                    default=SinTypes.WRATH)
-    weight = models.IntegerField(null=True,blank=True)
+    weight = models.IntegerField(null=True,blank=True, default=1)
     #basically how many skill in the deck
     skill_num = models.IntegerField(null=True,blank = True)
     image = models.CharField(max_length=100, null=True, blank=True)

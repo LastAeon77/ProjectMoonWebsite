@@ -10,6 +10,7 @@ from .models import (
     Skill,
     SkillEgo,
     BattleKeywords,
+    Faction
 )
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
@@ -27,6 +28,9 @@ class IdentityAdmin(ImportExportModelAdmin):
 
 
 admin.site.register(Identity, IdentityAdmin)
+
+# Faction
+admin.site.register(Faction)
 
 # Ego
 class EGOResource(resources.ModelResource):
