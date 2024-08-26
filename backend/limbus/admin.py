@@ -10,97 +10,107 @@ from .models import (
     Skill,
     SkillEgo,
     BattleKeywords,
-    Faction
+    Faction,
 )
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 # Register your models here.
-admin.site.register(Sinner)
-# Identity
-class IdentityResource(resources.ModelResource):
-    class Meta:
-        model = Identity
+# admin.site.register(Sinner)
+# # Identity
+# class IdentityResource(resources.ModelResource):
+#     class Meta:
+#         model = Identity
 
 
-class IdentityAdmin(ImportExportModelAdmin):
-    resource_class = IdentityResource
+# class IdentityAdmin(ImportExportModelAdmin):
+#     resource_class = IdentityResource
 
 
-admin.site.register(Identity, IdentityAdmin)
+# admin.site.register(Identity, IdentityAdmin)
 
-# Faction
-admin.site.register(Faction)
+# # Faction
+# admin.site.register(Faction)
 
-# Ego
-class EGOResource(resources.ModelResource):
-    class Meta:
-        model = EGO
-
-
-class EGOAdmin(ImportExportModelAdmin):
-    resource_class = EGOResource
+# # Ego
+# class EGOResource(resources.ModelResource):
+#     class Meta:
+#         model = EGO
 
 
-admin.site.register(EGO, EGOAdmin)
-# admin.site.register(EGO)
-# Passive
-class PassiveResource(resources.ModelResource):
-    class Meta:
-        model = Passive
+# class EGOAdmin(ImportExportModelAdmin):
+#     resource_class = EGOResource
 
 
-class PassiveAdmin(ImportExportModelAdmin):
-    resource_class = PassiveResource
+# admin.site.register(EGO, EGOAdmin)
+# # admin.site.register(EGO)
+# # Passive
+# class PassiveResource(resources.ModelResource):
+#     class Meta:
+#         model = Passive
 
 
-admin.site.register(Passive, PassiveAdmin)
-# Passive Abnormality
-class PassiveAbnormalityResource(resources.ModelResource):
-    class Meta:
-        model = PassiveAbnormality
+# class PassiveAdmin(ImportExportModelAdmin):
+#     resource_class = PassiveResource
 
 
-class PassiveAbnormalityAdmin(ImportExportModelAdmin):
-    resource_class = PassiveAbnormalityResource
+# admin.site.register(Passive, PassiveAdmin)
+# # Passive Abnormality
+# class PassiveAbnormalityResource(resources.ModelResource):
+#     class Meta:
+#         model = PassiveAbnormality
 
 
-admin.site.register(PassiveAbnormality, PassiveAbnormalityAdmin)
-
-# Passive EGO
-class PassiveEgoResource(resources.ModelResource):
-    class Meta:
-        model = PassiveEgo
+# class PassiveAbnormalityAdmin(ImportExportModelAdmin):
+#     resource_class = PassiveAbnormalityResource
 
 
-class PassiveEgoAdmin(ImportExportModelAdmin):
-    resource_class = PassiveEgoResource
+# admin.site.register(PassiveAbnormality, PassiveAbnormalityAdmin)
+
+# # Passive EGO
+# class PassiveEgoResource(resources.ModelResource):
+#     class Meta:
+#         model = PassiveEgo
 
 
-admin.site.register(PassiveEgo, PassiveEgoAdmin)
-admin.site.register(Skill)
-# SkillEGO
-class SkillEgoResource(resources.ModelResource):
-    class Meta:
-        model = SkillEgo
+# class PassiveEgoAdmin(ImportExportModelAdmin):
+#     resource_class = PassiveEgoResource
 
 
-class SkillEgoAdmin(ImportExportModelAdmin):
-    resource_class = SkillEgoResource
+# admin.site.register(PassiveEgo, PassiveEgoAdmin)
+    
+# # Skill
+# class SkillAdmin(admin.ModelAdmin):
+#     def formfield_for_foreignkey(self, db_field, request: HttpRequest, **kwargs):
+#         if db_field.name == "belonged_identity":
+#             kwargs["queryset"] = Identity.objects.order_by('-pk')
+#         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+# admin.site.register(Skill,SkillAdmin)
 
 
-admin.site.register(SkillEgo, SkillEgoAdmin)
-
-# BattleKeywords
-
-
-class BattleKeywordsResource(resources.ModelResource):
-    class Meta:
-        model = BattleKeywords
+# # SkillEGO
+# class SkillEgoResource(resources.ModelResource):
+#     class Meta:
+#         model = SkillEgo
 
 
-class BattleKeywordsAdmin(ImportExportModelAdmin):
-    resource_class = BattleKeywordsResource
+# class SkillEgoAdmin(ImportExportModelAdmin):
+#     resource_class = SkillEgoResource
 
 
-admin.site.register(BattleKeywords, BattleKeywordsAdmin)
+# admin.site.register(SkillEgo, SkillEgoAdmin)
+
+# # BattleKeywords
+
+
+# class BattleKeywordsResource(resources.ModelResource):
+#     class Meta:
+#         model = BattleKeywords
+
+
+# class BattleKeywordsAdmin(ImportExportModelAdmin):
+#     resource_class = BattleKeywordsResource
+
+
+# admin.site.register(BattleKeywords, BattleKeywordsAdmin)

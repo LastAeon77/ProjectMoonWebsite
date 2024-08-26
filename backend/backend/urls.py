@@ -24,5 +24,6 @@ urlpatterns = [
     path("api/", include("users.urls")),
     path("api/", include("general.urls")),
     path("api/limbus/", include("limbus.urls")),
+    path("api/limbus2/", include("limbus2.urls")),
     re_path(r"^static/(?P<path>.*)$", serve, {"document_root": settings.STATIC_ROOT}),
 ]
