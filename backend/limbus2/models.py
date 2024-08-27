@@ -156,8 +156,6 @@ class Hp(models.Model):
 class AttackResistList(models.Model):
     atk_type = models.CharField(max_length=30,null=True,blank=True)
     value = models.FloatField()
-    # id = identity * 307
-    # id = EGO * 521
     id = models.CharField(max_length=254,primary_key=True)
     identity = models.ForeignKey(Identity,on_delete=models.CASCADE,null=True,blank=True)
 
@@ -278,7 +276,7 @@ class EnEgoInfo(models.Model):
 class EgoAttributeResist(models.Model):
     id = models.CharField(max_length=30,primary_key=True)
     type = models.CharField(max_length=20)
-    value = models.IntegerField(null=True,blank=True)
+    value = models.FloatField(null=True,blank=True)
     ego = models.ForeignKey(Ego,on_delete=models.CASCADE)
 
 class EgoRequirement(models.Model):

@@ -5,7 +5,10 @@ from django.core import serializers
 import json
 from django.forms.models import model_to_dict
 from django.core.serializers.json import DjangoJSONEncoder
-
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from .serializers import (IdentityListLiteSerializerEN)
 from .models import (
     Identity,
@@ -81,7 +84,12 @@ def get_coin_info_for_skill_data(skill_datas_id):
     return sorted(coins, key = lambda d: d['action_index'])
 
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def IdentityGet(request,pk):
+    if request.user.username != "Malcute":
+        return HttpResponse("You are not authorized to access this resource.")
     identity = Identity.objects.get(pk=pk)
     en_info = EnIdentityInfo.objects.get(identity=pk)
     # 1000104 is skill on panic
@@ -138,7 +146,6 @@ def IdentityGet(request,pk):
     ###############
     
     final_dict = {}
-
     final_dict["skill_effect"] = skill_effect_dict
     final_dict["skill_data"] = skill_data_list
     final_dict["passives"] = passive_data
@@ -153,6 +160,7 @@ def IdentityGet(request,pk):
     final_dict["HP"] = model_to_dict(Hp.objects.get(id=pk))
     final_dict["name"] = en_info.title
     final_dict["sinner"] = str(identity.characterId.name)
+    final_dict["attack_resist"] = list(AttackResistList.objects.filter(identity=pk).values("atk_type","value"))
     final_dict["id"] = identity.id
     skill_temp = {}
     for s in skills:
@@ -191,14 +199,6 @@ def ego_coin_effect_list_analysis(skill_effect_id):
             coin_list.append(descs["desc"])
         i["descs"] = coin_list
     return coin_effect_list
-
-# def EN_ego_skill_effect_analysis(ego_skill):
-#     print(ego_skill)
-#     skill_effect = list(EN_EgoSkillEffect.objects.filter(ego_skill=ego_skill).order_by("uptie_level").values("name","desc","id"))
-#     print(skill_effect)
-#     for effect in skill_effect:
-#         effect["coin_effect_list"] = ego_coin_effect_list_analysis(effect["id"])
-#     return skill_effect
         
 
 def ego_skill_analysis(ego_skill,max_uptie_level=4):
@@ -260,8 +260,8 @@ def ego_skill_effect_analysis(ego_skill,max_uptie_level=4):
     return filled_effects
 
 
-        
-
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def EgoGet(request,pk):
     ego = Ego.objects.get(pk=pk)
     ego_dict = {}
@@ -270,8 +270,9 @@ def EgoGet(request,pk):
     corrosionSkill = ego.corrosionSkillId
     ego_dict["awakeningSkill"] = ego_skill_analysis(awakeningSkill.pk)
     ego_dict["awakeningSkillEffect"] = ego_skill_effect_analysis(awakeningSkill.pk)
-    ego_dict["corrosionSkill"] = ego_skill_analysis(corrosionSkill.pk)
-    ego_dict["corrosionSkillEffect"] = ego_skill_effect_analysis(corrosionSkill.pk)
+    if corrosionSkill:
+        ego_dict["corrosionSkill"] = ego_skill_analysis(corrosionSkill.pk)
+        ego_dict["corrosionSkillEffect"] = ego_skill_effect_analysis(corrosionSkill.pk)
 
     ego_dict["id"] = ego.id
     ego_dict["characterId"] = ego.characterId.name
@@ -283,6 +284,9 @@ def EgoGet(request,pk):
     ego_dict["walpurgisType"] = ego.walpurgisType
     ego_dict["passive"] = []
     ego_dict["en_info"] = EN_ego_info
+    ego_dict["attribute_resist"] = list(EgoAttributeResist.objects.filter(ego=pk).values("type","value"))
+    ego_dict["requirement"] = list(EgoRequirement.objects.filter(ego=pk).values("attributeType","num"))
+
     for i in ego.passive.all():
         temp_passive = {}
         all_en_passives = EnEgoPassive.objects.get(ego_passive=i.id)
