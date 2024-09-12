@@ -420,11 +420,14 @@ class StoryAcquire(APIView):
         data["stage_info"] = None
         data["stage_place"] = None
         if data.get("model"):
-            data["model"] = list(ModelToChar.objects.filter(id=data["model"]).values("enname","enNickName","id"))[0]
+            model_data = list(ModelToChar.objects.filter(id=data["model"]).values("enname","enNickName","id"))
+            if len(model_data) > 0:
+                data["model"] = model_data[0]
         if len(chapter_info)>0:
             data["chapter_info"] = str(chapter_info[0])
         if len(stage_info)>0:
             data["stage_info"] = stage_info[0].title
+            data["stage_id"] = primary_result.theater_story_id.id_index
             data["stage_place"] = stage_info[0].place
         return Response(json.dumps(data,ensure_ascii=False))
 
@@ -436,10 +439,8 @@ class ENStoryByChapterAndNode(APIView):
             return Response("None")
         data = request.data.copy()
         chapter = data.get("chapter",None)
-        node_data = data.get("node",None)
+        node_data = data.get("id_index",None)
         text_num = data.get("id_raw",None)
-        chapter = 105
-        node_data = 10
         if data.get("language",None) == "EN" or data.get("language",None) == None:
             node_datas = StoryTheaterList.objects.filter(story_theater=chapter,id_index=node_data)
             if len(node_datas) < 1:
