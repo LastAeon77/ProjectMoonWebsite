@@ -16,7 +16,8 @@ from .models import (
     CoinList,
     EnIdentityInfo,
     Hp,
-    AttackResistList)
+    AttackResistList,
+    EnLimbusStory)
 
 # class IdentityLite:
 #     def __init__(self, title, name, identity):
@@ -54,3 +55,16 @@ class IdentitySerializer(serializers.Serializer):
     breakSection = serializers.ListField(child = serializers.IntegerField())
     hp_default = serializers.IntegerField()
     hp_increment = serializers.FloatField()
+
+
+class EnLimbusStorySerializer(serializers.Serializer):
+    id_index = serializers.FloatField()
+    id_raw = serializers.IntegerField()
+    place = serializers.CharField()
+    model = serializers.CharField()
+    teller = serializers.CharField()
+    title = serializers.CharField()
+    content = serializers.CharField()
+    class Meta:
+        model = EnLimbusStory
+        fields = "__all__"
