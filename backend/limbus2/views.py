@@ -400,7 +400,7 @@ class StoryAcquire(APIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request,format=None):
         if request.user.username != "Malcute":
-            return Response("None")
+            return Response("None")  
         data = request.data.copy()
         string_param = data.get("search","")
         results = (
@@ -410,6 +410,11 @@ class StoryAcquire(APIView):
             .filter(similarity__gt=0.3)
             .order_by("-similarity")
         )
+        if len(results) == 0:
+            results = EnLimbusStory.objects.filter(content__icontains=string_param)
+        if len(results) == 0:
+            return Response("No Data Found")
+
         primary_result = results[0]
         node_id = primary_result.theater_story_id.node_id
         chapter_id = primary_result.theater_story_id.story_theater.id
@@ -417,6 +422,7 @@ class StoryAcquire(APIView):
         chapter_info = EnStageChapter.objects.filter(id_int=chapter_id)
         data = dict(EnLimbusStorySerializer(primary_result).data)
         data["chapter_info"] = None
+        data["stage_id"] = None
         data["stage_info"] = None
         data["stage_place"] = None
         if data.get("model"):
