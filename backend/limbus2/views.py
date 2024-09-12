@@ -403,15 +403,23 @@ class StoryAcquire(APIView):
             return Response("None")  
         data = request.data.copy()
         string_param = data.get("search","")
-        results = (
-            EnLimbusStory.objects.annotate(
-                similarity=TrigramSimilarity("content", string_param)
+        filtered_data = EnLimbusStory.objects.filter(content__icontains=string_param)
+        if len(filtered_data) > 0:
+            results = (
+                filtered_data.annotate(
+                    similarity=TrigramSimilarity("content", string_param)
+                )
+                .filter(similarity__gt=0.3)
+                .order_by("-similarity")
             )
-            .filter(similarity__gt=0.3)
-            .order_by("-similarity")
-        )
-        if len(results) == 0:
-            results = EnLimbusStory.objects.filter(content__icontains=string_param)
+        else:
+            results = (
+                EnLimbusStory.objects.annotate(
+                    similarity=TrigramSimilarity("content", string_param)
+                )
+                .filter(similarity__gt=0.3)
+                .order_by("-similarity")
+            )
         if len(results) == 0:
             return Response("No Data Found")
 
