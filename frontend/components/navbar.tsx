@@ -19,18 +19,18 @@ const Username = (
       <>
         <li className="nav-item">
           <Link href="/userpage" passHref>
-            <a className="px-3 py-2 flex items-center text-lg uppercase font-bold leading-snug text-white hover:opacity-75">
+            <div className="px-3 py-2 flex items-center text-lg uppercase font-bold leading-snug text-white hover:opacity-75">
               <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
               <span className="ml-2">{username}</span>
-            </a>
+            </div>
           </Link>
         </li>
         <li className="nav-item">
           <Link href={`/logout?prevUrl=${string_or_null(prevUrl)}`} passHref>
-            <a className="px-3 py-2 flex items-center  text-lg uppercase font-bold leading-snug text-white hover:opacity-75">
+            <div className="px-3 py-2 flex items-center  text-lg uppercase font-bold leading-snug text-white hover:opacity-75">
               <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
               <span className="ml-2">Logout</span>
-            </a>
+            </div>
           </Link>
         </li>
       </>
@@ -40,18 +40,18 @@ const Username = (
       <>
         <li className="nav-item">
           <Link href={`/signup`} passHref>
-            <a className="px-3 py-2 flex items-center text-lg uppercase font-bold leading-snug text-white hover:opacity-75">
+            <div className="px-3 py-2 flex items-center text-lg uppercase font-bold leading-snug text-white hover:opacity-75">
               <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
               <span className="ml-2">Register</span>
-            </a>
+            </div>
           </Link>
         </li>
         <li className="nav-item">
           <Link href={`/login?prevUrl=${string_or_null(prevUrl)}`} passHref>
-            <a className="px-3 py-2 flex items-center text-lg uppercase font-bold leading-snug text-white hover:opacity-75">
+            <div className="px-3 py-2 flex items-center text-lg uppercase font-bold leading-snug text-white hover:opacity-75">
               <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
               <span className="ml-2">Login</span>
-            </a>
+            </div>
           </Link>
         </li>
       </>

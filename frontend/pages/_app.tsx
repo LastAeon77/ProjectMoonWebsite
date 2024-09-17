@@ -8,6 +8,8 @@ import Navbar from "../components/navbar";
 // This makes sure we call our own domain for information when you set your own domain.
 if (typeof window !== "undefined") {
   axios.defaults.baseURL = window.location.origin;
+  // axios.defaults.baseURL = "http://127.0.0.1:8000"
+  // axios.defaults.baseURL = "https://malcute.aeonmoon.page/"
 }
 
 function MyApp({ Component, pageProps }: AppProps) {

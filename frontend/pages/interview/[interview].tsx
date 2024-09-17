@@ -23,8 +23,8 @@ const Interview = () => {
         <div className="flex flex-col items-center justify-center">
           <Box
             minHeight={500}
-            maxHeight={10000}
-            minWidth={1200}
+            maxHeight={10000000000000}
+            minWidth={100}
             maxWidth={1200}
             sx={{
               backgroundColor: "black",
