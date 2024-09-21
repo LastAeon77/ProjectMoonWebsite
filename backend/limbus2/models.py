@@ -462,7 +462,19 @@ class EnStageChapter(models.Model):
     
 
 class EnStageNode(models.Model):
+    #id is StoryTheaterList node_id
     title = models.CharField(max_length=100, blank=True, null=True)
     place = models.CharField(max_length=100, blank=True, null=True)
     desc = models.TextField(null=True,blank=True)
         
+class ENStoryChaptersModel(models.Model):
+    title = models.CharField(max_length=100,null=True,blank=True)
+    chapterNumber = models.CharField(max_length=100,null=True,blank=True)
+    stageDetail = models.CharField(max_length=100,null=True,blank=True)
+    chaptertitle = models.CharField(max_length=100,null=True,blank=True)
+    chapter = models.CharField(max_length=100,null=True,blank=True)
+    node_index = models.IntegerField(null=True,blank=True)
+    story_theather_list_node_id = models.IntegerField(null=True,blank=True)
+
+    class Meta:
+        managed = False

@@ -32,6 +32,7 @@ from .models import (
     EnIdentityInfo,
     Hp,
     AttackResistList,
+    ENStoryChaptersModel
 )  # Create your views here.
 
 
@@ -395,6 +396,29 @@ from django.contrib.postgres.search import TrigramSimilarity
 from .models import (EnLimbusStory,ModelToChar,StoryTheater,StoryTheaterList,EnStageChapter,EnStageNode)
 from .serializers import EnLimbusStorySerializer
 from rest_framework.views import APIView
+from random import choice
+
+def story_fill(EN_limbus_story : EnLimbusStory):
+    node_id = EN_limbus_story.theater_story_id.node_id
+    chapter_id = EN_limbus_story.theater_story_id.story_theater.id
+    stage_info = EnStageNode.objects.filter(id=node_id)
+    chapter_info = EnStageChapter.objects.filter(id_int=chapter_id)
+    data = dict(EnLimbusStorySerializer(EN_limbus_story).data)
+    data["chapter_info"] = None
+    data["stage_id"] = None
+    data["stage_info"] = None
+    data["stage_place"] = None
+    if data.get("model"):
+        model_data = list(ModelToChar.objects.filter(id=data["model"]).values("enname","enNickName","id"))
+        if len(model_data) > 0:
+            data["model"] = model_data[0]
+    if len(chapter_info)>0:
+        data["chapter_info"] = str(chapter_info[0])
+    if len(stage_info)>0:
+        data["stage_info"] = stage_info[0].title
+        data["stage_id"] = EN_limbus_story.theater_story_id.id_index
+        data["stage_place"] = stage_info[0].place
+    return Response(json.dumps(data,ensure_ascii=False))
 
 class StoryAcquire(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -424,55 +448,90 @@ class StoryAcquire(APIView):
             return Response("No Data Found")
 
         primary_result = results[0]
-        node_id = primary_result.theater_story_id.node_id
-        chapter_id = primary_result.theater_story_id.story_theater.id
-        stage_info = EnStageNode.objects.filter(id=node_id)
-        chapter_info = EnStageChapter.objects.filter(id_int=chapter_id)
-        data = dict(EnLimbusStorySerializer(primary_result).data)
-        data["chapter_info"] = None
-        data["stage_id"] = None
-        data["stage_info"] = None
-        data["stage_place"] = None
-        if data.get("model"):
-            model_data = list(ModelToChar.objects.filter(id=data["model"]).values("enname","enNickName","id"))
-            if len(model_data) > 0:
-                data["model"] = model_data[0]
-        if len(chapter_info)>0:
-            data["chapter_info"] = str(chapter_info[0])
-        if len(stage_info)>0:
-            data["stage_info"] = stage_info[0].title
-            data["stage_id"] = primary_result.theater_story_id.id_index
-            data["stage_place"] = stage_info[0].place
-        return Response(json.dumps(data,ensure_ascii=False))
+        return story_fill(primary_result)
+    
+
+class StoryRandom(APIView):
+    def get(self,request):
+        pks = EnLimbusStory.objects.values_list('pk', flat=True)
+        random_pk = choice(pks)
+        random_obj = EnLimbusStory.objects.get(pk=random_pk)
+        return story_fill(random_obj)
 
 
 class ENStoryByChapterAndNode(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     def post(self,request,format=None):
-        if request.user.username != "Malcute":
-            return Response("None")
-        data = request.data.copy()
-        chapter = data.get("chapter",None)
-        node_data = data.get("id_index",None)
-        text_num = data.get("id_raw",None)
-        if data.get("language",None) == "EN" or data.get("language",None) == None:
-            node_datas = StoryTheaterList.objects.filter(story_theater=chapter,id_index=node_data)
-            if len(node_datas) < 1:
-                return Response("Can't locate node. Is the chapter or node number wrong?")
-            node = node_datas[0]
-            EN_story = EnLimbusStory.objects.filter(theater_story_id=node.id).order_by("id_raw")
-            if len(EN_story) < 1:
-                return Response("Can't locate text. Node and chapter located.")
-            return Response(list(EN_story.values()))
+        # if request.user.username != "Malcute":
+        #     return Response("None")
+        try:
+            data = request.data.copy()
+            chapter = data.get("chapter",None)
+            node_data = data.get("id_index",None)
+            text_num = data.get("id_raw",None)
+            node_id = data.get("node_id",None)
+            node_index = data.get("node_index",None)
+            print(data)
+            if data.get("language",None) == "EN" or data.get("language",None) == None:
+                if node_id:
+                    print("here")
+                    node_datas = StoryTheaterList.objects.filter(node_id=node_id,id_index=node_index)
+                    print(node_datas)
+                    if len(node_datas) < 1:
+                        return Response("Can't locate node.")
+                    node = node_datas[0]
+                    print(node)
+                else:
+                    node_datas = StoryTheaterList.objects.filter(story_theater=chapter,id_index=node_data)
+                    if len(node_datas) < 1:
+                        return Response("Can't locate node. Is the chapter or node number wrong?")
+                    node = node_datas[0]
+                EN_story = EnLimbusStory.objects.filter(theater_story_id=node.id).order_by("id_raw")
+                if len(EN_story) < 1:
+                    return Response("Can't locate text. Node and chapter located.")
+                story_list = []
+                place = None
+                for i in EN_story:
+                    data_to_add = model_to_dict(i)
+                    if data_to_add.get("place") == None:
+                        data_to_add["place"] = place
+                    else:
+                        data_to_add["place"] = data_to_add.get("place")
+                        place = data_to_add.get("place")
+                    if data_to_add.get("model"):
+                        model_data = list(ModelToChar.objects.filter(id=data_to_add["model"]).values("enname","enNickName","id"))
+                        if len(model_data) > 0:
+                            data_to_add["model"] = model_data[0]
+                    story_list.append(data_to_add)
+                return Response(story_list)
+            else:
+                return Response("Not Implemented")
+        except:
+            return Response("Input error")
 
-        
+class ENChapterNodeList(APIView):
+    def get(self,request):
+        query = """SELECT 1 as id, h.title, h."chapterNumber",h."stageDetail", h.chaptertitle, h.chapter,h.id_index AS node_index, h.node_id as story_theather_list_node_id
+FROM (( 
+    SELECT *
+    FROM public.limbus2_storytheater AS b
+    RIGHT JOIN public.limbus2_enstagechapter AS d
+    ON b.id = d.id_int
+) AS e
+RIGHT JOIN (
+    public.limbus2_storytheaterlist AS lst
+    LEFT JOIN public.limbus2_enstagenode AS node
+    ON lst.node_id = node.id
+) AS f
+ON e.id_int = f.story_theater_id) AS h
+        """
+        results = ENStoryChaptersModel.objects.raw(raw_query=query)
+        results =[ model_to_dict(r) for r in results]
+        return Response(results)
+
 class StoryTheaterGet(APIView):
     permission_classes = (permissions.AllowAny,)
     def get(self,request,format=None):
         data = list(EnStageChapter.objects.all().values())
         return Response(data)
-
-
-
-
-
