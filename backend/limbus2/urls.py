@@ -12,5 +12,7 @@ urlpatterns = [
     path("story_query",views.ENStoryByChapterAndNode.as_view(),name="story_query"),
     path("story_theater",views.StoryTheaterGet.as_view(),name="story_theater"),
     path("story_random",views.StoryRandom.as_view(),name="story_random"),
-    path("en_chapter_list",views.ENChapterNodeList.as_view(),name="en_chapter_list")
+    path("en_chapter_list",views.ENChapterNodeList.as_view(),name="en_chapter_list"),
+    path("story_acquire_list",views.StoryAcquireList.as_view(),name="story_acquire_list")
+
 ]

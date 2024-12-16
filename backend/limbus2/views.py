@@ -41,7 +41,6 @@ class IdentityListLite(generics.ListAPIView):
     queryset = EnIdentityInfo.objects.values("title", "name", "identity")
     serializer_class = IdentityListLiteSerializerEN
 
-
 def duplicate_along_uptie_level(dict, max_uptie_level):
     temp_dict = dict.copy()
     for skill_id, effects in temp_dict.items():
@@ -167,12 +166,12 @@ def IdentityGet(request, pk):
     ##########
 
     ##### Passives ##########
-    passive_data_list = {}
     passive_data = list(
         RelPassive.objects.filter(identity=pk).values(
             "passive", "uptie_level", "is_support"
         )
     )
+    passive_data = [ passive for passive in passive_data if EnPassiveDescription.objects.filter(passive=passive["passive"]).exists()]
     for passive in passive_data:
         try:
             passive["attribution"] = list(
@@ -183,9 +182,8 @@ def IdentityGet(request, pk):
             )
         except:
             passive["attribution"] = []
-        passive["ENDescription"] = model_to_dict(
-            EnPassiveDescription.objects.get(passive=passive["passive"])
-        )
+        curr_passive = EnPassiveDescription.objects.filter(passive=passive["passive"])
+        passive["ENDescription"] = model_to_dict(curr_passive[0])
 
     ###############
 
@@ -418,7 +416,7 @@ def story_fill(EN_limbus_story : EnLimbusStory):
         data["stage_info"] = stage_info[0].title
         data["stage_id"] = EN_limbus_story.theater_story_id.id_index
         data["stage_place"] = stage_info[0].place
-    return Response(json.dumps(data,ensure_ascii=False))
+    return json.dumps(data,ensure_ascii=False)
 
 class StoryAcquire(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -448,7 +446,40 @@ class StoryAcquire(APIView):
             return Response("No Data Found")
 
         primary_result = results[0]
-        return story_fill(primary_result)
+        return Response(story_fill(primary_result))
+
+class StoryAcquireList(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def post(self,request,format=None):
+        # if request.user.username != "Malcute":
+        #     return Response("None")  
+        data = request.data.copy()
+        string_param = data.get("search","")
+        filtered_data = EnLimbusStory.objects.filter(content__icontains=string_param)
+        if len(filtered_data) > 0:
+            results = (
+                filtered_data.annotate(
+                    similarity=TrigramSimilarity("content", string_param)
+                )
+                .filter(similarity__gt=0.3)
+                .order_by("-similarity")
+            )
+        else:
+            results = (
+                EnLimbusStory.objects.annotate(
+                    similarity=TrigramSimilarity("content", string_param)
+                )
+                .filter(similarity__gt=0.3)
+                .order_by("-similarity")
+            )
+        if len(results) == 0:
+            return Response("No Data Found")
+
+        final_list = []
+        print(results)
+        for i in results:
+            final_list.append(story_fill(i))
+        return Response(final_list)
     
 
 class StoryRandom(APIView):
@@ -472,16 +503,12 @@ class ENStoryByChapterAndNode(APIView):
             text_num = data.get("id_raw",None)
             node_id = data.get("node_id",None)
             node_index = data.get("node_index",None)
-            print(data)
             if data.get("language",None) == "EN" or data.get("language",None) == None:
                 if node_id:
-                    print("here")
                     node_datas = StoryTheaterList.objects.filter(node_id=node_id,id_index=node_index)
-                    print(node_datas)
                     if len(node_datas) < 1:
                         return Response("Can't locate node.")
                     node = node_datas[0]
-                    print(node)
                 else:
                     node_datas = StoryTheaterList.objects.filter(story_theater=chapter,id_index=node_data)
                     if len(node_datas) < 1:
