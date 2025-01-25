@@ -36,7 +36,7 @@ class AttributeCondition(models.Model):
 
 class EnPassiveDescription(models.Model):
     passive = models.ForeignKey(Passive, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=200)
     desc = models.TextField()
     summary = models.TextField()
     id = models.CharField(max_length=50, primary_key=True)
@@ -56,7 +56,7 @@ class EnSkillEffect(models.Model):
         Skill, on_delete=models.CASCADE, related_name="en_skill_coin_effect"
     )
     uptie_level = models.IntegerField(null=True, blank=True)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=200)
     desc = models.TextField()
     keywords = ArrayField(
         models.CharField(max_length=30), null=True, blank=True, default=list
