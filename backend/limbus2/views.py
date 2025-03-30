@@ -213,6 +213,43 @@ def IdentityGet(request, pk):
     return JsonResponse(final_dict)
 
 
+import random
+@api_view(["GET"])
+@permission_classes([permissions.AllowAny])
+def Gacha(request):
+    gacha_pool_iden = Identity.objects.select_related("enidentityinfo").values("rank","enidentityinfo__namewithtitle","id")
+    gacha_pool_ego = Ego.objects.select_related("enegoinfo").values("enegoinfo__name","id")
+    SPECIAL = 13
+    EGO_CHANCE = 13
+    IDENTITY_000_CHANCE = 29
+    IDENTITY_00_CHANCE = 128
+    IDENTITY_0_CHANCE = 817
+    TOTAL = 1000
+    results = []
+    
+    for _ in range(10):
+        roll = random.randint(1, TOTAL)
+        
+        if roll <= SPECIAL:
+            results.append({"id": None, "name": "Special Item", "rank": "Special"})
+        elif roll <= SPECIAL + EGO_CHANCE:
+            chosen = random.choice(list(gacha_pool_ego))
+            results.append({"id": chosen['id'], "name": chosen['enegoinfo__name'], "rank": "Ego"})
+        elif roll <= SPECIAL + EGO_CHANCE + IDENTITY_000_CHANCE:
+            chosen = random.choice([iden for iden in gacha_pool_iden if iden['rank'] == 3])
+            results.append({"id": chosen['id'], "name": chosen['enidentityinfo__namewithtitle'], "rank": 3})
+        elif roll <= SPECIAL + EGO_CHANCE + IDENTITY_000_CHANCE + IDENTITY_00_CHANCE:
+            chosen = random.choice([iden for iden in gacha_pool_iden if iden['rank'] == 2])
+            results.append({"id": chosen['id'], "name": chosen['enidentityinfo__namewithtitle'], "rank": 2})
+        else:
+            chosen = random.choice([iden for iden in gacha_pool_iden if iden['rank'] == 1])
+            results.append({"id": chosen['id'], "name": chosen['enidentityinfo__namewithtitle'], "rank": 1})
+    
+    return json.dumps(results)
+
+
+
+
 from .models import (
     EgoSkill,
     EgoSkillData,
