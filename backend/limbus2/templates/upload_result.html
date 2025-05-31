@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Results</title>
+</head>
+<body>
+    <h1>Upload Results</h1>
+    <ul>
+        {% for filename, status in results %}
+            <li><strong>{{ filename }}</strong>: {{ status }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'limbus2:upload_json' %}">Upload more files</a>
+</body>
+</html>

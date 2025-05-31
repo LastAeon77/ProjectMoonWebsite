@@ -101,7 +101,7 @@ def get_coin_info_for_skill_data(skill_datas_id):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def IdentityGet(request, pk):
-    if request.user.username != "Malcute":
+    if request.user.username != "Malcute" and request.user.username != "Aeon":
         return HttpResponse("You are not authorized to access this resource.")
     identity = Identity.objects.get(pk=pk)
     en_info = EnIdentityInfo.objects.get(identity=pk)
@@ -217,14 +217,16 @@ import random
 @api_view(["GET"])
 @permission_classes([permissions.AllowAny])
 def Gacha(request):
-    gacha_pool_iden = Identity.objects.select_related("enidentityinfo").values("rank","enidentityinfo__namewithtitle","id")
-    gacha_pool_ego = Ego.objects.select_related("enegoinfo").values("enegoinfo__name","id")
+    gacha_pool_iden = EnIdentityInfo.objects.select_related("identity").values("identity__rank", "nameWithTitle", "title", "identity_id")
+    gacha_pool_ego = EnEgoInfo.objects.select_related("ego").values("ego__id", "name")
+    
     SPECIAL = 13
     EGO_CHANCE = 13
     IDENTITY_000_CHANCE = 29
     IDENTITY_00_CHANCE = 128
     IDENTITY_0_CHANCE = 817
     TOTAL = 1000
+    
     results = []
     
     for _ in range(10):
@@ -234,18 +236,18 @@ def Gacha(request):
             results.append({"id": None, "name": "Special Item", "rank": "Special"})
         elif roll <= SPECIAL + EGO_CHANCE:
             chosen = random.choice(list(gacha_pool_ego))
-            results.append({"id": chosen['id'], "name": chosen['enegoinfo__name'], "rank": "Ego"})
+            results.append({"id": chosen['ego__id'], "name": chosen['name'], "rank": "Ego"})
         elif roll <= SPECIAL + EGO_CHANCE + IDENTITY_000_CHANCE:
-            chosen = random.choice([iden for iden in gacha_pool_iden if iden['rank'] == 3])
-            results.append({"id": chosen['id'], "name": chosen['enidentityinfo__namewithtitle'], "rank": 3})
+            chosen = random.choice([iden for iden in gacha_pool_iden if iden['identity__rank'] == 3])
+            results.append({"id": chosen['identity_id'], "name": chosen['nameWithTitle'], "alt_name": chosen['title'], "rank": 3})
         elif roll <= SPECIAL + EGO_CHANCE + IDENTITY_000_CHANCE + IDENTITY_00_CHANCE:
-            chosen = random.choice([iden for iden in gacha_pool_iden if iden['rank'] == 2])
-            results.append({"id": chosen['id'], "name": chosen['enidentityinfo__namewithtitle'], "rank": 2})
+            chosen = random.choice([iden for iden in gacha_pool_iden if iden['identity__rank'] == 2])
+            results.append({"id": chosen['identity_id'], "name": chosen['nameWithTitle'], "alt_name": chosen['title'], "rank": 2})
         else:
-            chosen = random.choice([iden for iden in gacha_pool_iden if iden['rank'] == 1])
-            results.append({"id": chosen['id'], "name": chosen['enidentityinfo__namewithtitle'], "rank": 1})
+            chosen = random.choice([iden for iden in gacha_pool_iden if iden['identity__rank'] == 1])
+            results.append({"id": chosen['identity_id'], "name": chosen['nameWithTitle'], "alt_name": chosen['title'], "rank": 1})
     
-    return json.dumps(results)
+    return JsonResponse(results, safe=False)
 
 
 
@@ -599,3 +601,98 @@ class StoryTheaterGet(APIView):
     def get(self,request,format=None):
         data = list(EnStageChapter.objects.all().values())
         return Response(data)
+
+from django.shortcuts import render
+from .forms import JSONUploadForm
+import json
+from .utils import modelmap, natural_key, foreign_key_map
+
+# ✅ Upload View (no cache)
+@permission_classes([IsAuthenticated])
+def upload_json_view(request):
+    if request.user.username != "Aeon":
+        return None
+
+    if request.method != 'POST':
+        return render(request, 'upload_form.html', {'form': JSONUploadForm()})
+
+    form = JSONUploadForm(request.POST, request.FILES)
+    if not form.is_valid():
+        return render(request, 'upload_form.html', {'form': form})
+
+    files = sorted(request.FILES.getlist('files'), key=natural_key)
+    results = []
+
+    for file in files:
+        filename = file.name
+        model = modelmap.get(filename)
+        if not model:
+            results.append((filename, 'Unknown model'))
+            continue
+
+        try:
+            data = json.load(file)
+            fks = foreign_key_map.get(filename, {})
+
+            for entry in data:
+                obj_id = entry.get('id')
+                if obj_id is None:
+                    results.append((filename, 'Missing "id" in entry'))
+                    continue
+
+                defaults = {k: v for k, v in entry.items() if k != 'id'}
+
+                # 🔄 Resolve foreign keys on the fly
+                for field, related_model in fks.items():
+                    fk_id = entry.get(field)
+                    if fk_id is not None:
+                        try:
+                            defaults[field] = related_model.objects.get(id=fk_id)
+                        except related_model.DoesNotExist:
+                            results.append((filename, f'{related_model.__name__} with id {fk_id} not found'))
+                            break  # Skip this entry
+                else:
+                    model.objects.update_or_create(id=obj_id, defaults=defaults)
+
+            results.append((filename, 'Success'))
+
+        except Exception as e:
+            results.append((filename, f'Error: {e}'))
+
+    return render(request, 'upload_result.html', {'results': results})
+
+
+# @permission_classes([IsAuthenticated])
+# def upload_json_view(request):
+#     if request.user.username == "Aeon":
+#         if request.method == 'POST':
+#             form = JSONUploadForm(request.POST, request.FILES)
+#             if form.is_valid():
+#                 files = request.FILES.getlist('files')
+#                 files = sorted(files, key=natural_key)
+#                 results = []
+#                 for file in files:
+#                     filename = file.name
+#                     model = modelmap.get(filename)
+#                     if not model:
+#                         results.append((filename, 'Unknown model'))
+#                         continue
+#                     try:
+#                         data = json.load(file)
+#                         for entry in data:
+#                             obj_id = entry.get('id')
+#                             if obj_id is None:
+#                                 results.append((filename, 'Missing "id" in entry'))
+#                                 continue
+#                             # Ensure we preserve the ID and update or create the object
+#                             defaults = {k: v for k, v in entry.items() if k != 'id'}
+#                             model.objects.update_or_create(id=obj_id, defaults=defaults)
+#                         results.append((filename, 'Success'))
+#                     except Exception as e:
+#                         results.append((filename, f'Error: {e}'))
+
+#                 return render(request, 'upload_result.html', {'results': results})
+#         else:
+#             form = JSONUploadForm()
+#         return render(request, 'upload_form.html', {'form': form})
+    
