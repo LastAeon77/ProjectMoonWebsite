@@ -290,7 +290,7 @@ class EnEgoSkillEffect(models.Model):
     ego_skill = models.ForeignKey(
         EgoSkill, on_delete=models.CASCADE, related_name="ego_level_list_en"
     )
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     desc = models.TextField(null=True, blank=True)
     uptie_level = models.IntegerField()
 
