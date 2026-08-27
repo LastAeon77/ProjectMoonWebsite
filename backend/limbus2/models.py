@@ -321,7 +321,7 @@ class EnEgoPassive(models.Model):
     ego_passive = models.ForeignKey(
         EgoPassive, on_delete=models.CASCADE, null=True, blank=True
     )
-    name = models.CharField(max_length=50, blank=True, null=True)
+    name = models.CharField(max_length=200, blank=True, null=True)
     desc = models.TextField(null=True, blank=True)
 
 

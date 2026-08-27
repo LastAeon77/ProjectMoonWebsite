@@ -324,17 +324,26 @@ def ego_skill_analysis(ego_skill, max_uptie_level=4):
             "icon_id",
         )
     )
-    min_uptie_level = skill_data[0]["uptie_level"]
+    if not skill_data:
+        return []
+
+    min_uptie_level = int(skill_data[0]["uptie_level"])
+    
+    # NEW: Find the actual highest uptie level in the DB for this skill
+    db_max_level = max([int(x["uptie_level"]) for x in skill_data])
+    actual_max_uptie = max(max_uptie_level, db_max_level)
+
     filled_effects = []
     previous_effect = None
     previous_roll = None
     existing_levels = {}
+    
     for x in skill_data:
         existing_levels[int(x["uptie_level"])] = x
-    for uptie_index in range(min_uptie_level, max_uptie_level + 1):
-        # Step 3: Fill in the missing levels.
+        
+    # NEW: Use actual_max_uptie instead of max_uptie_level
+    for uptie_index in range(min_uptie_level, actual_max_uptie + 1):
         if uptie_index in existing_levels:
-            # If level exists, use the existing effect.
             current_effect = existing_levels[uptie_index]
             current_effect["coin_roll"] = ego_coin_list_analysis(
                 existing_levels[uptie_index]["id"]
@@ -342,7 +351,6 @@ def ego_skill_analysis(ego_skill, max_uptie_level=4):
             if len(current_effect["coin_roll"]) < 1:
                 current_effect["coin_roll"] = previous_roll
         else:
-            # If level is missing, use the previous effect's value.
             current_effect = previous_effect.copy()
             current_effect["uptie_level"] = uptie_index
 
@@ -350,9 +358,8 @@ def ego_skill_analysis(ego_skill, max_uptie_level=4):
         previous_roll = current_effect["coin_roll"]
         previous_effect = current_effect
 
-        # Step 4: Update the dictionary with the filled effects.
-    sorted(filled_effects, key=lambda x: x["uptie_level"])
-    return filled_effects
+    # Note: sorted() returns a new list, it doesn't sort in place. You should return the sorted list.
+    return sorted(filled_effects, key=lambda x: x["uptie_level"])
 
 
 def ego_skill_effect_analysis(ego_skill, max_uptie_level=4):
@@ -361,31 +368,37 @@ def ego_skill_effect_analysis(ego_skill, max_uptie_level=4):
         .order_by("uptie_level")
         .values("id", "name", "desc", "uptie_level")
     )
+    if not skill_effect:
+        return []
+
     for effect in skill_effect:
         effect["coin_descs"] = ego_coin_effect_list_analysis(effect["id"])
-    min_uptie_level = skill_effect[0]["uptie_level"]
+        
+    min_uptie_level = int(skill_effect[0]["uptie_level"])
+    
+    # NEW: Find actual max level
+    db_max_level = max([int(x["uptie_level"]) for x in skill_effect])
+    actual_max_uptie = max(max_uptie_level, db_max_level)
+
     filled_effects = []
     previous_effect = None
     existing_levels = {}
+    
     for x in skill_effect:
         existing_levels[int(x["uptie_level"])] = x
 
-    for uptie_index in range(min_uptie_level, max_uptie_level + 1):
-        # Step 3: Fill in the missing levels.
+    # NEW: Use actual_max_uptie
+    for uptie_index in range(min_uptie_level, actual_max_uptie + 1):
         if uptie_index in existing_levels:
-            # If level exists, use the existing effect.
             current_effect = existing_levels[uptie_index]
         else:
-            # If level is missing, use the previous effect's value.
             current_effect = previous_effect.copy()
             current_effect["uptie_level"] = uptie_index
 
         filled_effects.append(current_effect)
         previous_effect = current_effect
 
-        # Step 4: Update the dictionary with the filled effects.
-    sorted(filled_effects, key=lambda x: x["uptie_level"])
-    return filled_effects
+    return sorted(filled_effects, key=lambda x: x["uptie_level"])
 
 
 @api_view(["GET"])
