@@ -4,9 +4,9 @@ FROM node:18-alpine as build
 
 WORKDIR /app/frontend
 RUN npm install --global pm2
+RUN npm install --global next
 COPY ./frontend/package.json ./
 COPY ./frontend/package-lock.json ./
-RUN npm install
 COPY ./frontend/ ./
 EXPOSE 3000
 USER node

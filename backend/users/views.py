@@ -5,14 +5,17 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import MyTokenObtainPairSerializer, NuggetSerializer
 from .models import Nugget
+from .throttles import AUTH_THROTTLES
 
 
 class ObtainTokenPairWithColorView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+    throttle_classes = AUTH_THROTTLES
 
 
 class CustomUserCreate(APIView):
     permission_classes = (permissions.AllowAny,)
+    throttle_classes = AUTH_THROTTLES
 
     def post(self, request, format="json"):
         serializer = NuggetSerializer(data=request.data)

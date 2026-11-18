@@ -24,7 +24,7 @@ class CardDeckSerializers(serializers.ModelSerializer):
     rank = serializers.ReadOnlyField(source="office.Rank.Name")
     class Meta:
         model = Card
-        fields = ["Name", "ImgPath"]
+        fields = ["Name", "ImgPath", "rank"]
 
 
 class DeckSerializers(serializers.ModelSerializer):

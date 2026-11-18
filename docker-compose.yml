@@ -5,6 +5,10 @@ services:
     build:
       context: .
       dockerfile: ./docker/nextjs/Dockerfile
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
   nginx:
     restart: unless-stopped
     build:
@@ -49,16 +53,24 @@ services:
     expose:
       - 8000
     mem_limit: "300M"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   db:
-    image: postgres:13-alpine
+    # Django 5.2 needs PostgreSQL 14+. Postgres 17 uses a NEW volume; the old Postgres 13
+    # volume (postgres_data_prod) is left untouched so it can be rolled back to.
+    image: postgres:17-alpine
     volumes:
-      - postgres_data_prod:/var/lib/postgresql/data/
+      - postgres17_data_prod:/var/lib/postgresql/data/
     expose:
       - 5432
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
+
   # asp_backend:
 
   #     build:
@@ -87,5 +99,7 @@ secrets:
     file: ./SA_PASSWORD.txt
 volumes:
   static_volume: {}
+  postgres17_data_prod:
+  # Old Postgres 13 data, kept for rollback. Do not delete until the upgrade is confirmed.
   postgres_data_prod:
   postgres_data_prod_2:
