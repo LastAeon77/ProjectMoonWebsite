@@ -26,7 +26,8 @@ class SkillEgoSerializers(serializers.ModelSerializer):
             "name",
             "in_game_id",
             "level",
-            "character"
+            "emotion_type",
+            "character",
             "emotion_type",
             "desc",
             "abName",

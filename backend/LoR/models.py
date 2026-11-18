@@ -53,7 +53,8 @@ class Effects(models.Model):
     Rank = models.ForeignKey(Rank, null=True,on_delete=models.CASCADE)
     Guest = models.ForeignKey(Office,null=True, on_delete=models.CASCADE)
     def __str__(self):
-        return f"{self.Name}: {self.Description}"
+        # return f"{self.Name}: {self.Description}"
+        return f"{self.Name}"
 
 
 # model for Page
