@@ -17,4 +17,3 @@ django-import-export==3.1.0
 django-jsonform==2.22.0
 django-extensions==3.2.3
 django-better-admin-arrayfield==1.4.2
-
